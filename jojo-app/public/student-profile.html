@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Student Profile</title>
+    <style>
+
+        body {
+            position: relative;
+            width: 1440px;
+            height: 2000px;
+            background-color: #ffffff;
+            margin: auto;
+        }
+        .box {
+            position: absolute;
+            width: 100%;
+            height: 275px;
+            left: 0px;
+            top: 0px;
+            border-top-left-radius: 50px;
+            border-top-right-radius: 50px;
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+            background-color: #4C535F;
+        }
+        .remaining {
+            position: absolute;
+            width: 100%;
+            height: 1725px;
+            left: 0px;
+            top: 275px;
+            border-top-left-radius: 0px;
+            border-top-right-radius: 0px;
+            border-bottom-left-radius: 50px;
+            border-bottom-right-radius: 50px;
+            background-color: #A6A69F;
+        }
+        .circle {
+            position: absolute;
+            width: 240px;
+            height: 235px;
+            left: 216px;
+            top: 158px;
+            border: 4px solid #575757;
+            border-radius: 117.5px;
+            background-color: #fff;
+            background-size: cover;
+            background-position: center;
+            cursor: pointer;
+        }
+        .circle input[type="file"] {
+            display: none;
+        }
+        .name {
+            position: absolute;
+            width: 360px;
+            height: 37px;
+            left: 160px;
+            top: 399px;
+            font-family: 'Roboto';
+            font-style: normal;
+            font-weight: 400;
+            font-size: 30px;
+            line-height: 112.4%;
+            display: flex;
+            align-items: center;
+            color: #000000;
+        }
+        .work-address {
+            position: absolute;
+            width: 645px;
+            height: 28px;
+            left: 160px;
+            top: 436px;
+            font-family: 'Roboto';
+            font-style: normal;
+            font-weight: 400;
+            font-size: 20px;
+            line-height: 112.4%;
+            display: flex;
+            align-items: center;
+            color: #000000;
+        }
+        .current-address {
+            position: absolute;
+            width: 265px;
+            height: 23px;
+            left: 160px;
+            top: 464px;
+            font-family: 'Roboto';
+            font-style: normal;
+            font-weight: 400;
+            font-size: 15px;
+            line-height: 112.4%;
+            display: flex;
+            align-items: center;
+            color: #4C535F;
+        }
+        .contact-box {
+            position: absolute;
+            width: 170px;
+            height: 30px;
+            left: 160px;
+            top: 487px;
+            background: #FFFAFA;
+            border-radius: 20px;
+        }
+        .contact-info {
+            position: absolute;
+            width: 170px;
+            height: 30px;
+            left: 7px;
+            top: 0px;
+            font-family: 'Roboto';
+            font-style: normal;
+            font-weight: 600;
+            font-size: 18px;
+            line-height: 112.4%;
+            display: flex;
+            align-items: center;
+            color: #26406C;
+            text-decoration: none;
+        }
+        .invite-interview {
+            position: absolute;
+            width: 170px;
+            height: 30px;
+            left: 350px;
+            top: 487px;
+            font-family: 'Roboto';
+            font-style: normal;
+            font-weight: 600;
+            font-size: 18px;
+            line-height: 112.4%;
+            display: flex;
+            align-items: center;
+            color: #26406C;
+            text-decoration: none;
+        }
+        .contact-box:hover {
+    		background: #4C535F;
+		}
+        .contact-box:hover .contact-info {
+  			color: #FFFFFF;
+		}
+        .icon {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            left: 850px;
+            top: 399px;
+        }
+        .school-name {
+            position: absolute;
+            width: 260px;
+            height: 50px;
+            left: 920px;
+            top: 399px;
+            font-family: 'Roboto';
+            font-style: normal;
+            font-weight: 600;
+            font-size: 20px;
+            line-height: 112.4%;
+            display: flex;
+            align-items: center;
+            color: #000000;
+        }
+        .about {
+            position: absolute;
+            width: 170px;
+            height: 29px;
+            left: 160px;
+            top: 562px;
+            font-family: 'Roboto';
+            font-style: normal;
+            font-weight: 400;
+            font-size: 20px;
+            line-height: 112.4%;
+            display: flex;
+            align-items: center;
+            color: #000000;
+        }
+        .about-dtl {
+            position: absolute;
+            width: 1120px;
+            height: 82px;
+            left: 160px;
+            top: 591px;
+            font-family: 'Roboto';
+            font-style: normal;
+            font-weight: 400;
+            font-size: 16px;
+            line-height: 112.4%;
+            display: flex;
+            align-items: center;
+            color: #000000;
+        }
+        .activity {
+            position: absolute;
+            width: 170px;
+            height: 29px;
+            left: 160px;
+            top: 696px;
+            font-family: 'Roboto';
+            font-style: normal;
+            font-weight: 400;
+            font-size: 20px;
+            line-height: 112.4%;
+            display: flex;
+            align-items: center;
+            color: #000000;
+        }
+        .activity-dtl {
+            position: absolute;
+            width: 1120px;
+            height: 82px;
+            left: 160px;
+            top: 725px;
+            font-family: 'Roboto';
+            font-style: normal;
+            font-weight: 400;
+            font-size: 16px;
+            line-height: 112.4%;
+            display: flex;
+            align-items: center;
+            color: #000000;
+        }
+        .exp {
+            position: absolute;
+            width: 170px;
+            height: 29px;
+            left: 160px;
+            top: 830px;
+            font-family: 'Roboto';
+            font-style: normal;
+            font-weight: 400;
+            font-size: 20px;
+            line-height: 112.4%;
+            display: flex;
+            align-items: center;
+            color: #000000;
+        }
+        .exp-dtl {
+            position: absolute;
+            width: 1120px;
+            height: 153px;
+            left: 160px;
+            top: 859px;
+            font-family: 'Roboto';
+            font-style: normal;
+            font-weight: 400;
+            font-size: 16px;
+            line-height: 112.4%;
+            display: flex;
+            align-items: center;
+            color: #000000;
+        }
+        .education {
+            position: absolute;
+            width: 170px;
+            height: 29px;
+            left: 160px;
+            top: 1012px;
+            font-family: 'Roboto';
+            font-style: normal;
+            font-weight: 400;
+            font-size: 20px;
+            line-height: 112.4%;
+            display: flex;
+            align-items: center;
+            color: #000000;
+        }
+        .education-dtl {
+            position: absolute;
+            width: 265px;
+            height: 82px;
+            left: 255px;
+            top: 1041px;
+            font-family: 'Roboto';
+            font-style: normal;
+            font-weight: 400;
+            font-size: 20px;
+            line-height: 112.4%;
+            display: flex;
+            align-items: center;
+            color: #000000;
+        }
+        .icon2 {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            left: 172px;
+            top: 1055px;
+        }
+        .skill {
+            position: absolute;
+            width: 170px;
+            height: 29px;
+            left: 160px;
+            top: 1148px;
+            font-family: 'Roboto';
+            font-style: normal;
+            font-weight: 400;
+            font-size: 20px;
+            line-height: 112.4%;
+            display: flex;
+            align-items: center;
+            color: #000000;
+        }
+        .icon3 svg {
+			position:absolute;
+  			width: 36px;
+  			height: 36px;
+  			left: 172px;
+  			top: 1177px;
+			color: #000000;
+		}
+        .skill-dtl {
+            position: absolute;
+            width: 190px;
+            height: 36px;
+            left: 255px;
+            top: 1177px;
+            font-family: 'Roboto';
+            font-style: normal;
+            font-weight: 400;
+            font-size: 16px;
+            line-height: 112.4%;
+            display: flex;
+            align-items: center;
+            color: #000000;
+        }
+        .icon4 svg {
+			position:absolute;
+  			width: 36px;
+  			height: 36px;
+  			left: 172px;
+  			top: 1213px;
+			color: #000000;
+		}
+        .skill-dtl2 {
+            position: absolute;
+            width: 190px;
+            height: 36px;
+            left: 255px;
+            top: 1213px;
+            font-family: 'Roboto';
+            font-style: normal;
+            font-weight: 400;
+            font-size: 16px;
+            line-height: 112.4%;
+            display: flex;
+            align-items: center;
+            color: #000000;
+        }
+        .icon5 svg {
+			position:absolute;
+  			width: 36px;
+  			height: 36px;
+  			left: 172px;
+  			top: 1249px;
+			color: #000000;
+		}
+        .skill-dtl3 {
+            position: absolute;
+            width: 190px;
+            height: 36px;
+            left: 255px;
+            top: 1249px;
+            font-family: 'Roboto';
+            font-style: normal;
+            font-weight: 400;
+            font-size: 16px;
+            line-height: 112.4%;
+            display: flex;
+            align-items: center;
+            color: #000000;
+        }
+    </style>
+  </head>
+  <body>
+    <div class="box"></div>
+    <div class="remaining"></div>
+    <label for="file-upload">
+      <div class="circle">
+        <input type="file" id="file-upload" accept="image/*" onchange="loadFile(event)">
+      </div>
+    </label>
+    <script>
+      var loadFile = function(event) {
+        var circle = document.querySelector('.circle');
+        circle.style.backgroundImage = 'url(' + URL.createObjectURL(event.target.files[0]) + ')';
+      };
+    </script>
+    <div class="name">User Name</div>
+    <div class="work-address">Real Estate Agent at Right At Home Realty Inc., Brokerage</div>
+    <div class="current-address">Greater Toronto Area, Canada</div>
+    <div class="contact-box">
+        <a href="path/to/your/cv.pdf" download class="contact-info">Download my CV</a>
+    </div>
+	<a href="#"class="invite-interview">Invite to Interview</a>
+    <div class="icon">
+        <svg fill="#000000" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 60.1 60.1" xml:space="preserve">
+            <g>
+                <g>
+                    <path d="M57,31.537c0-1.5,0-5.8,0-5.8c0-0.5-0.3-0.9-0.7-1l-5.3-1.5l8.5-4.3c0.4-0.2,0.6-0.5,0.6-0.9s-0.3-0.7-0.6-0.9l-29-14.5
+                        c-0.3-0.1-0.6-0.1-0.9,0l-29,14.5c-0.4,0.2-0.6,0.5-0.6,0.9s0.2,0.7,0.6,0.9l9.4,4.7v31.9H6v2h48v-2h-4v-30.5l5,1.4v5.1
+                        c-1.7,0-3,1.3-3,3v12c0,1.7,1.3,3,3,3h2c1.7,0,3-1.3,3-3v-12C60,32.837,58.7,31.537,57,31.537z M30,4.637l26.8,13.4l-8.7,4.3
+                        l-17.1-4.9v-1.9h-2v6h2v-2l14.5,4.2l-15.5,7.7l-26.8-13.4L30,4.637z M12,55.537v-4h23v-2H12v-24.9l17.6,8.8
+                        c0.1,0.1,0.2,0.1,0.4,0.1s0.3,0,0.5-0.1l17.5-8.8v30.9H12z M58,46.537c0,0.6-0.4,1-1,1h-2c-0.6,0-1-0.4-1-1v-12c0-0.6,0.4-1,1-1h2
+                        c0.6,0,1,0.4,1,1V46.537z"/>
+                    <rect x="38" y="49.537" width="5" height="2"/>
+                </g>
+            </g>
+        </svg>
+    </div>
+    <div class="school-name">Concordia University</div>
+    <div class="about">About</div>
+    <div class="about-dtl">Concordia is a next-generation university, continually reimagining the future of higher education. Located in the vibrant and multicultural city of Montreal, Concordia is the top-ranked university in Canada founded within the last 50 years and among the most innovative in its approach to experiential learning.</div>
+    <div class="activity">Activity</div>
+    <div class="activity-dtl">no recent posts and comments will be displayed here.</div>
+    <div class="exp">Experience</div>
+    <div class="exp-dtl">Real Estate Agent Real Estate Agent<br>Right At Home Realty Inc., Brokerage Right At Home Realty Inc., Brokerage 2017 - Present · 6 yrs 3 mos Toronto, Canada <br>AreaToronto, Canada Area<br>     · Dedicated to put clients' interests first when buying, selling and renting property. Excellent knowledge in financing strategies, market analysis and negotiation techniques.</div>
+    <div class="education">Education</div>
+    <div class="education-dtl">Concordia University</div>
+    <div class="icon2">
+        <svg fill="#000000" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 60.1 60.1" xml:space="preserve">
+            <g>
+                <g>
+                    <path d="M57,31.537c0-1.5,0-5.8,0-5.8c0-0.5-0.3-0.9-0.7-1l-5.3-1.5l8.5-4.3c0.4-0.2,0.6-0.5,0.6-0.9s-0.3-0.7-0.6-0.9l-29-14.5
+                        c-0.3-0.1-0.6-0.1-0.9,0l-29,14.5c-0.4,0.2-0.6,0.5-0.6,0.9s0.2,0.7,0.6,0.9l9.4,4.7v31.9H6v2h48v-2h-4v-30.5l5,1.4v5.1
+                        c-1.7,0-3,1.3-3,3v12c0,1.7,1.3,3,3,3h2c1.7,0,3-1.3,3-3v-12C60,32.837,58.7,31.537,57,31.537z M30,4.637l26.8,13.4l-8.7,4.3
+                        l-17.1-4.9v-1.9h-2v6h2v-2l14.5,4.2l-15.5,7.7l-26.8-13.4L30,4.637z M12,55.537v-4h23v-2H12v-24.9l17.6,8.8
+                        c0.1,0.1,0.2,0.1,0.4,0.1s0.3,0,0.5-0.1l17.5-8.8v30.9H12z M58,46.537c0,0.6-0.4,1-1,1h-2c-0.6,0-1-0.4-1-1v-12c0-0.6,0.4-1,1-1h2
+                        c0.6,0,1,0.4,1,1V46.537z"/>
+                    <rect x="38" y="49.537" width="5" height="2"/>
+                </g>
+            </g>
+        </svg>
+    </div>
+    <div class="skill">Skills</div>
+    <div class="icon3">
+        <svg width="24" height="24" fill="none" viewBox="0 0 24 24">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 6.75H7.75C6.64543 6.75 5.75 7.64543 5.75 8.75V17.25C5.75 18.3546 6.64543 19.25 7.75 19.25H16.25C17.3546 19.25 18.25 18.3546 18.25 17.25V8.75C18.25 7.64543 17.3546 6.75 16.25 6.75H15"></path>
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14 8.25H10C9.44772 8.25 9 7.80228 9 7.25V5.75C9 5.19772 9.44772 4.75 10 4.75H14C14.5523 4.75 15 5.19772 15 5.75V7.25C15 7.80228 14.5523 8.25 14 8.25Z"></path>
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.75 12.25H14.25"></path>
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.75 15.25H14.25"></path>
+          </svg> 
+          <div class="skill-dtl">Project Manahement</div>
+    </div>
+    <div class="icon4">
+        <svg width="24" height="24" fill="none" viewBox="0 0 24 24">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 6.75H7.75C6.64543 6.75 5.75 7.64543 5.75 8.75V17.25C5.75 18.3546 6.64543 19.25 7.75 19.25H16.25C17.3546 19.25 18.25 18.3546 18.25 17.25V8.75C18.25 7.64543 17.3546 6.75 16.25 6.75H15"></path>
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14 8.25H10C9.44772 8.25 9 7.80228 9 7.25V5.75C9 5.19772 9.44772 4.75 10 4.75H14C14.5523 4.75 15 5.19772 15 5.75V7.25C15 7.80228 14.5523 8.25 14 8.25Z"></path>
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.75 12.25H14.25"></path>
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.75 15.25H14.25"></path>
+          </svg> 
+          <div class="skill-dtl2">Engineer</div>
+    </div>
+    <div class="icon5">
+        <svg width="24" height="24" fill="none" viewBox="0 0 24 24">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 6.75H7.75C6.64543 6.75 5.75 7.64543 5.75 8.75V17.25C5.75 18.3546 6.64543 19.25 7.75 19.25H16.25C17.3546 19.25 18.25 18.3546 18.25 17.25V8.75C18.25 7.64543 17.3546 6.75 16.25 6.75H15"></path>
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14 8.25H10C9.44772 8.25 9 7.80228 9 7.25V5.75C9 5.19772 9.44772 4.75 10 4.75H14C14.5523 4.75 15 5.19772 15 5.75V7.25C15 7.80228 14.5523 8.25 14 8.25Z"></path>
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.75 12.25H14.25"></path>
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.75 15.25H14.25"></path>
+          </svg> 
+          <div class="skill-dtl3">French</div>
+    </div>
+
+
+  </body>
+</html>
