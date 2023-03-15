@@ -9,6 +9,7 @@ import { userLogin } from "../../App";
 import { useNavigate } from "react-router-dom";
 import Alert from "react-bootstrap/Alert";
 import { sha256 } from "js-sha256";
+import SetProfileImg from "../../Components/SetProfileImg/SetProfileImg";
 
 export default function UpdateProfile() {
   const [context, setContext] = useContext(userLogin);
@@ -144,11 +145,10 @@ export default function UpdateProfile() {
               <div className="row">
                 <div className="col-sm">
                   {/* First of three columns */}
-                  {/* <img src="" alt="pfp" className="img-rounded"></img> */}
 
-                  <div className="square rounded p-5 bg-secondary">
-                    <small>profile image</small>
-                  </div>
+                  <SetProfileImg
+                    profileImg={student?.profileImg}
+                  ></SetProfileImg>
                 </div>
 
                 <div className="col-sm">
