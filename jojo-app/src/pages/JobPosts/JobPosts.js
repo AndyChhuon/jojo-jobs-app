@@ -18,7 +18,7 @@ export default function JobPosts() {
   };
 
   const loading = (
-    <div className="jobs-loading-container">
+    <div key="loading" className="jobs-loading-container">
       <span className="search-text">Searching...</span>
       <Spinner animation="border" size="sm" />
     </div>
@@ -34,9 +34,9 @@ export default function JobPosts() {
       })
         .then((response) => response.json())
         .then((data) => {
-          let jobs = data.map((info) => (
-            <JobPost key={info.jobId} info={info} />
-          ));
+          let jobs = data.map((info) => {
+            return <JobPost key={info.jobId} info={info} />;
+          });
           setJobPosts(jobs);
         });
     } else {
@@ -53,9 +53,9 @@ export default function JobPosts() {
       )
         .then((response) => response.json())
         .then((data) => {
-          let jobs = data.map((info) => (
-            <JobPost key={info.jobId} info={info} />
-          ));
+          let jobs = data.map((info) => {
+            return <JobPost key={info.jobId} info={info} />;
+          });
           setJobPosts(jobs);
         });
     }
