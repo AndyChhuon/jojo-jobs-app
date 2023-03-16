@@ -23,6 +23,7 @@ Jojo seeks to fix this problem, thanks to an algorithm that matches various comp
 
 - Bootstrap
 - MongoDB
+- AWS S3
 - Google Login
 - .Net/C# REST API
 - Html
