@@ -17,11 +17,19 @@ export default function UpdateProfile() {
 
   const [student, setStudent] = useState(context);
 
+  //Detect if profile has changed
+  const [profileHasChanged, setProfileHasChanged] = useState(false);
+
+  //Data url of cropped image
+  const [croppedImg, setCroppedImg] = useState(student?.profileImg);
+
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
   const [passwordChange, setPassordChange] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
+
+  const [resumeFile, setResumeFile] = useState(null);
 
   const handlePasswordChange = (event) => {
     setPassordChange(event.target.value);
@@ -65,19 +73,82 @@ export default function UpdateProfile() {
   };
 
   const handleResumeInputChange = (event) => {
-    setStudent({ ...student, resume: event.target.value });
+    setResumeFile(event.target.files[0]);
   };
 
-  const sendToApi = () => {
+  function dataURLtoFile(dataurl, filename) {
+    var arr = dataurl.split(","),
+      mime = arr[0].match(/:(.*?);/)[1],
+      bstr = atob(arr[1]),
+      n = bstr.length,
+      u8arr = new Uint8Array(n);
+
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+    }
+
+    return new File([u8arr], filename, { type: mime });
+  }
+
+  async function sendToApi() {
     let prevPass = student.password;
     let newStudent = student;
     //If password was changed
     if (passwordChange !== "") {
       newStudent.password = sha256(passwordChange);
     }
-    console.log(newStudent);
-    console.log(student.password);
+    //If profile image was changed
+    if (profileHasChanged) {
+      console.log(croppedImg);
 
+      //Convert data url to file
+      const file = dataURLtoFile(croppedImg, "profile.png");
+
+      // Create image form data
+      const formData = new FormData();
+      formData.append("formFile", file);
+
+      // Send the form data to the server using fetch()
+      let ImageUrl = await fetch(
+        "https://jobapplicationsapi.azurewebsites.net/api/AwsAPI/ProfileImages?studentId=" +
+          newStudent.id,
+        {
+          method: "POST",
+
+          body: formData,
+        }
+      )
+        .then((response) => response.text())
+        .then((data) => {
+          return data;
+        });
+
+      newStudent.profileImg = ImageUrl;
+    }
+
+    //If resume was changed
+    if (resumeFile) {
+      // Create resume form data from file
+      const formData = new FormData();
+      formData.append("formFile", resumeFile);
+
+      // Send the form data to the server using fetch()
+      let resumeURL = await fetch(
+        "https://jobapplicationsapi.azurewebsites.net/api/AwsAPI/CV?studentId=" +
+          newStudent.id,
+        {
+          method: "POST",
+          body: formData,
+        }
+      )
+        .then((response) => response.text())
+        .then((data) => {
+          return data;
+        });
+      newStudent.cv = resumeURL;
+    }
+
+    //Update applicant profile with new info
     fetch(
       "https://jobapplicationsapi.azurewebsites.net/api/JobApplicantsAPI/" +
         newStudent.id +
@@ -98,7 +169,7 @@ export default function UpdateProfile() {
         console.log(newStudent);
       }
     });
-  };
+  }
 
   const submitHandler = (event) => {
     event.preventDefault();
@@ -128,6 +199,7 @@ export default function UpdateProfile() {
     if (!context) {
       navigate("/login");
     }
+    console.log(context);
   }, []);
 
   return (
@@ -147,7 +219,9 @@ export default function UpdateProfile() {
                   {/* First of three columns */}
 
                   <SetProfileImg
-                    profileImg={student?.profileImg}
+                    croppedImg={croppedImg}
+                    setCroppedImg={setCroppedImg}
+                    setProfileHasChanged={setProfileHasChanged}
                   ></SetProfileImg>
                 </div>
 
@@ -269,16 +343,35 @@ export default function UpdateProfile() {
 
               {student?.profileType !== "Recruiter" ? (
                 <>
-                  <label htmlFor="resume">Upload Resume: </label>
+                  <div className="margin-top-2">
+                    <label htmlFor="resume">Upload Resume: </label>
+                  </div>
                   <input
                     type="file"
                     id="resume"
                     name="resume"
-                    className="form-control"
-                    required
+                    className="form-control upload-resume"
+                    required={student?.cv ? false : true}
                     onChange={handleResumeInputChange}
                   />
-                  <div className="form-group">
+                  <span className="curr-resume">
+                    {student?.cv ? (
+                      <a
+                        className="margin-left-5"
+                        target="_blank"
+                        href={student.cv}
+                      >
+                        {decodeURIComponent(
+                          student.cv
+                            .substring(student.cv.lastIndexOf("/") + 1)
+                            .replace(/\+/g, " ")
+                        ) + " - Current Resume"}
+                      </a>
+                    ) : (
+                      <span className="margin-left-5">No resume uploaded</span>
+                    )}
+                  </span>
+                  <div className="form-group margin-top-2">
                     <label htmlFor="workexp">Work Experience: </label>
                     <textarea
                       type="text"
@@ -291,7 +384,9 @@ export default function UpdateProfile() {
                       onChange={handleWorkexpInputChange}
                     />
                   </div>
-                  <label htmlFor="education">Education: </label>
+                  <label htmlFor="education" className="margin-top-2">
+                    Education:{" "}
+                  </label>
                   <textarea
                     type="text"
                     id="education"
@@ -307,7 +402,7 @@ export default function UpdateProfile() {
                 ""
               )}
 
-              <div className="form-group">
+              <div className="form-group margin-top-2">
                 <label htmlFor="aboutme">About me: </label>
                 <textarea
                   placeholder="Present yourself!"

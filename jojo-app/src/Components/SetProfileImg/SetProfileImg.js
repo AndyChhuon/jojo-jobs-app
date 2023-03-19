@@ -12,6 +12,8 @@ import "react-image-crop/dist/ReactCrop.css";
 import Popover from "react-bootstrap/Popover";
 
 export default function SetProfileImg(props) {
+  const { setProfileHasChanged, croppedImg, setCroppedImg } = props;
+
   const TO_RADIANS = Math.PI / 180;
 
   var scale = 1;
@@ -19,13 +21,16 @@ export default function SetProfileImg(props) {
 
   const [crop, setCrop] = useState();
   const [aspect, setAspect] = useState(1 / 1);
+
+  //On select file, set image src inside cropper
   const [imgSrc, setImgSrc] = useState("");
-  const [croppedImg, setCroppedImg] = useState(props.profileImg);
+
   const [show, setShow] = useState(false);
 
   const uploadFileRef = useRef(null);
   const imgRef = useRef(null);
 
+  //Crop image
   const resizeImage = (image, crop, callback) => {
     var canvas = document.createElement("canvas");
     var ctx = canvas.getContext("2d");
@@ -76,18 +81,19 @@ export default function SetProfileImg(props) {
 
     ctx.restore();
 
-    callback(canvas.toDataURL());
+    callback(canvas.toDataURL("image/png"));
   };
 
   const onCompletedCrop = (crop) => {
-    console.log(crop);
     if (crop.width && crop.height) {
       resizeImage(imgRef.current, crop, (url) => {
         setCroppedImg(url);
+        setProfileHasChanged(true);
       });
     }
   };
 
+  //Handle image upload (show crop preview)
   const onSelectFile = (e) => {
     if (e.target.files && e.target.files.length > 0) {
       setCrop(undefined); // Makes crop preview update between images.
@@ -99,6 +105,7 @@ export default function SetProfileImg(props) {
       reader.readAsDataURL(e.target.files[0]);
       setShow(true);
     }
+    e.target.value = "";
   };
 
   const handleIconClick = () => {
