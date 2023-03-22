@@ -8,22 +8,44 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faTrashCan, faEdit } from "@fortawesome/free-solid-svg-icons";
 import JobEditPopup from "../JobEditPopup/JobEditPopup";
 import DeleteJobPopup from "../DeleteJobPopup/DeleteJobPopup";
+import { useContext } from "react";
+import { userLogin } from "../../App";
+import { useNavigate } from "react-router-dom";
 
 export default function JobPopup(props) {
   const [show, setShow] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
+  const [context, setContext] = useContext(userLogin);
+  const navigate = useNavigate();
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const handleShowEdit = () => setShowEdit(true);
   const handleShowDelete = () => setShowDelete(true);
 
+  const handleApply = () => {
+    if (!context) {
+      navigate("/login?initDisplayError=Please login to apply for this job.");
+    }
+    if (context?.profileType === "Recruiter") {
+      navigate(
+        "/UpdateProfile?initDisplayError=Recruiters cannot apply for jobs. Change profile type."
+      );
+    }
+    if (!context?.cv) {
+      navigate(
+        "/UpdateProfile?initDisplayError=Please upload a CV to apply for this job."
+      );
+    }
+  };
+
   const {
     jobTitle = "test",
     jobLocation,
     jobCompany,
     fullDescription,
+    jobId,
     benefits,
     icon = false,
   } = props.info;
@@ -140,7 +162,7 @@ export default function JobPopup(props) {
           {icon ? (
             ":"
           ) : (
-            <Button variant="primary" onClick={handleClose}>
+            <Button variant="primary" onClick={handleApply}>
               Apply Now
             </Button>
           )}

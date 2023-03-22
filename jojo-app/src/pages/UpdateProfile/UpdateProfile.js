@@ -6,9 +6,9 @@ import "./UpdateProfile.less";
 import Header from "../../Components/Header/Header";
 import { useContext } from "react";
 import { userLogin } from "../../App";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import Alert from "react-bootstrap/Alert";
-import { sha256 } from "js-sha256";
+import Cookies from "universal-cookie";
 import SetProfileImg from "../../Components/SetProfileImg/SetProfileImg";
 
 export default function UpdateProfile() {
@@ -23,7 +23,13 @@ export default function UpdateProfile() {
   //Data url of cropped image
   const [croppedImg, setCroppedImg] = useState(student?.profileImg);
 
-  const [error, setError] = useState("");
+  //If coming from sign up, display message
+  const { search } = useLocation();
+  const parameters = new URLSearchParams(search);
+
+  const [error, setError] = useState(
+    parameters.get("initDisplayError") ? parameters.get("initDisplayError") : ""
+  );
   const [success, setSuccess] = useState("");
 
   const [passwordChange, setPassordChange] = useState("");
@@ -91,16 +97,15 @@ export default function UpdateProfile() {
   }
 
   async function sendToApi() {
-    let prevPass = student.password;
     let newStudent = student;
-    //If password was changed
-    if (passwordChange !== "") {
-      newStudent.password = sha256(passwordChange);
+
+    if (passwordChange !== "" && passwordConfirm !== "") {
+      newStudent.password = passwordChange;
+      console.log(passwordChange);
     }
+
     //If profile image was changed
     if (profileHasChanged) {
-      console.log(croppedImg);
-
       //Convert data url to file
       const file = dataURLtoFile(croppedImg, "profile.png");
 
@@ -126,6 +131,7 @@ export default function UpdateProfile() {
       newStudent.profileImg = ImageUrl;
     }
 
+    const cookies = new Cookies();
     //If resume was changed
     if (resumeFile) {
       // Create resume form data from file
@@ -151,24 +157,28 @@ export default function UpdateProfile() {
     //Update applicant profile with new info
     fetch(
       "https://jobapplicationsapi.azurewebsites.net/api/JobApplicantsAPI/" +
-        newStudent.id +
-        "?Password=" +
-        prevPass,
+        newStudent.id,
       {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
+          Authorization: "Bearer " + cookies.get("Jwt"),
         },
         body: JSON.stringify(newStudent),
       }
-    ).then((response) => {
-      if (response.ok) {
-        setError("");
-        setSuccess("Profile updated successfully.");
-        setContext(newStudent);
-        console.log(newStudent);
-      }
-    });
+    )
+      .then((response) => {
+        if (response.ok) {
+          setError("");
+          setSuccess("Profile updated successfully.");
+          setContext(newStudent);
+        } else {
+          setError("Error updating profile. Please try again.");
+        }
+      })
+      .catch((error) => {
+        setError("Error updating profile. Please try again.");
+      });
   }
 
   const submitHandler = (event) => {
@@ -199,7 +209,6 @@ export default function UpdateProfile() {
     if (!context) {
       navigate("/login");
     }
-    console.log(context);
   }, []);
 
   return (
