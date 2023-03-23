@@ -2,7 +2,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
 import "./ManagePosts.less";
 import JobPost from "../../Components/JobPost/JobPost";
 import Spinner from "react-bootstrap/Spinner";
@@ -79,9 +78,7 @@ export default function JobPosts() {
       <div className="ManagePosts">
         <Container className="ManageJobPosts">
           <Row>
-            <Col md={3}>
-              <div className="Jobs-Header">Showing 1-8 of 8 Results</div>
-            </Col>
+            <div className="Jobs-Header">Showing 1-8 of 8 Results</div>
           </Row>
         </Container>
 
