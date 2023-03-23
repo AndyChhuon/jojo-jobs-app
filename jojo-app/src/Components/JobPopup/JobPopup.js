@@ -51,7 +51,7 @@ export default function JobPopup(props) {
         {icon ? (
           <>
             <Button
-              className="button"
+              className="button edit-btn"
               variant="secondary"
               size="sm"
               onClick={handleShowEdit}
@@ -69,7 +69,7 @@ export default function JobPopup(props) {
               <FontAwesomeIcon icon={faEye} />
             </Button>
             <Button
-              className="button"
+              className="button delete-btn"
               variant="secondary"
               size="sm"
               onClick={handleShowDelete}

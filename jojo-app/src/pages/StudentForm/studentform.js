@@ -81,23 +81,23 @@ export default function StudentForm() {
         <Container>
           <h2 className="title">More About You</h2>
           <form onSubmit={submitHandler}>
-            <div class="container">
-              <div class="row">
-                <div class="col-sm">
+            <div className="container">
+              <div className="row">
+                <div className="col-sm">
                   {/* First of three columns */}
-                  {/* <img src="" alt="pfp" class="img-rounded"></img> */}
+                  {/* <img src="" alt="pfp" className="img-rounded"></img> */}
 
-                  <div class="square rounded p-5 bg-secondary">
+                  <div className="square rounded p-5 bg-secondary">
                     <small>profile image</small>
                   </div>
                 </div>
-                <div class="col-sm">
+                <div className="col-sm">
                   {/* Second of three columns */}
 
                   <label htmlFor="firstName">First Name: </label>
                   <input
                     type="text"
-                    class="form-control"
+                    className="form-control"
                     id="firstName"
                     name="firstName"
                     required
@@ -110,7 +110,7 @@ export default function StudentForm() {
                     type="text"
                     id="lastName"
                     name="lastName"
-                    class="form-control"
+                    className="form-control"
                     required
                     value={student.lastName}
                     onChange={handleLastNameInputChange}
@@ -121,7 +121,7 @@ export default function StudentForm() {
                     type="email"
                     id="email"
                     name="email"
-                    class="form-control"
+                    className="form-control"
                     required
                     value={student.email}
                     onChange={handleEmailInputChange}
@@ -132,13 +132,13 @@ export default function StudentForm() {
                     type="text"
                     id="password"
                     name="password"
-                    class="form-control"
+                    className="form-control"
                     required
                     value={student.password}
                     onChange={handlePasswordInputChange}
                   />
                 </div>
-                <div class="col-sm">
+                <div className="col-sm">
                   {/* Third of three columns */}
 
                   <label htmlFor="city">City: </label>
@@ -146,7 +146,7 @@ export default function StudentForm() {
                     type="text"
                     id="city"
                     name="city"
-                    class="form-control"
+                    className="form-control"
                     required
                     value={student.city}
                     onChange={handleCityInputChange}
@@ -157,7 +157,7 @@ export default function StudentForm() {
                     type="text"
                     id="state"
                     name="state"
-                    class="form-control"
+                    className="form-control"
                     required
                     value={student.state}
                     onChange={handleStateInputChange}
@@ -168,7 +168,7 @@ export default function StudentForm() {
                     type="text"
                     id="username"
                     name="username"
-                    class="form-control"
+                    className="form-control"
                     required
                     value={student.username}
                     onChange={handleUsernameInputChange}
@@ -179,7 +179,7 @@ export default function StudentForm() {
                     type="text"
                     id="rpassword"
                     name="rpassword"
-                    class="form-control"
+                    className="form-control"
                     required
                     value={student.rpassword}
                     onChange={handleRpasswordInputChange}
@@ -193,20 +193,20 @@ export default function StudentForm() {
                   type="file"
                   id="resume"
                   name="resume"
-                  class="form-control"
+                  className="form-control"
                   required
                   value={student.resume}
                   onChange={handleResumeInputChange}
                 />
               </div>
 
-              <div class="form-group">
+              <div className="form-group">
                 <label htmlFor="workexp">Work Experience: </label>
                 <textarea
                   type="text"
                   id="workexp"
                   name="workexp"
-                  class="form-control"
+                  className="form-control"
                   rows="5"
                   required
                   value={student.workexp}
@@ -214,37 +214,37 @@ export default function StudentForm() {
                 />
               </div>
 
-              <div class="form-group">
+              <div className="form-group">
                 <label htmlFor="education">Education: </label>
                 <textarea
                   type="text"
                   id="education"
                   name="education"
-                  class="form-control"
+                  className="form-control"
                   rows="4"
                   value={student.education}
                   onChange={handleEducationInputChange}
                 />
               </div>
 
-              <div class="form-group">
+              <div className="form-group">
                 <label htmlFor="aboutme">About me: </label>
                 <textarea
                   placeholder="Present yourself!"
                   type="text"
                   id="aboutme"
                   name="aboutme"
-                  class="form-control"
+                  className="form-control"
                   rows="2"
                   value={student.aboutme}
                   onChange={handleAboutmeInputChange}
                 />
               </div>
 
-              <div class="mt-2 col-md-12">
-                <div class="text-center">
-                  <div class="d-grid gap-2 d-md-block">
-                    <button type="submit" class="btn btn-success  ">
+              <div className="mt-2 col-md-12">
+                <div className="text-center">
+                  <div className="d-grid gap-2 d-md-block">
+                    <button type="submit" className="btn btn-success  ">
                       Create Profile
                     </button>
                   </div>

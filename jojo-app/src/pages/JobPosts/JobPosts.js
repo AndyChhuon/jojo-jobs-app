@@ -11,11 +11,10 @@ import SearchJob from "../../Components/SearchJob/SearchJob";
 
 export default function JobPosts() {
   //Blur Search bar
-  const [blurSearch, setBlurSearch] = useState(false);
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState({ data: [], url: "" });
 
-  const onSearchChange = (event) => {
-    setSearch(event.target.value);
+  const onSearchChange = (search) => {
+    setSearch(search);
   };
 
   const loading = (
@@ -28,7 +27,8 @@ export default function JobPosts() {
   const [jobPosts, setJobPosts] = useState([loading]);
   //Fetch api search state
   useEffect(() => {
-    if (search === "") {
+    setJobPosts([loading]);
+    if (search.url === "") {
       fetch("https://jobapplicationsapi.azurewebsites.net/api/JobPostsAPI", {
         method: "GET", // default, so we can ignore
       })
@@ -41,10 +41,14 @@ export default function JobPosts() {
         });
     } else {
       fetch(
-        "https://jobapplicationsapi.azurewebsites.net/api/JobPostsAPI/search/" +
-          search,
+        "https://jobapplicationsapi.azurewebsites.net/api/JobPostsAPI/search" +
+          search.url,
         {
-          method: "GET", // default, so we can ignore
+          method: "POST", // default, so we can ignore
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: search.data.length > 0 ? JSON.stringify(search.data) : null,
         }
       )
         .then((response) => response.json())
@@ -70,7 +74,7 @@ export default function JobPosts() {
             <SearchJob onSearchChange={onSearchChange} />
           </Col>
           <Col md={8}>
-            <div className="Jobs-Header">Showing 1-8 of 40 Results</div>
+            <div className="Jobs-Header">Showing 1-8 of 8 Results</div>
             <div className="padding-0">
               {jobPosts.length > 0 ? (
                 jobPosts

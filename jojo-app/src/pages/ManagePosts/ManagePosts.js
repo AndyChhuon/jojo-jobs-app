@@ -64,7 +64,7 @@ export default function JobPosts() {
         <Container className="ManageJobPosts">
           <Row>
             <Col md={3}>
-              <div className="Jobs-Header">Showing 1-8 of 40 Results</div>
+              <div className="Jobs-Header">Showing 1-8 of 8 Results</div>
             </Col>
           </Row>
         </Container>

@@ -17,7 +17,6 @@ export default function JobPosts(props) {
   return (
     <Container className="JobPost">
       <Row>
-        <Col xs={2} md={2} sm={2} style={{ display: "none" }}></Col>
         <Col xs={9} md={9} sm={9}>
           <Container>
             <Row className="top-row">
