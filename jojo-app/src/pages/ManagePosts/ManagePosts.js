@@ -1,5 +1,5 @@
 //Sudent form component
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -8,8 +8,13 @@ import JobPost from "../../Components/JobPost/JobPost";
 import Spinner from "react-bootstrap/Spinner";
 import CreateJobPopup from "../../Components/CreateJobPopup/CreateJobPopup";
 import Header from "../../Components/Header/Header";
+import { userLogin } from "../../App";
+import { useNavigate } from "react-router-dom";
 
 export default function JobPosts() {
+  const [context, setContext] = useContext(userLogin);
+  const navigate = useNavigate();
+
   const updatePosts = () => {
     fetch("https://jobapplicationsapi.azurewebsites.net/api/JobPostsAPI", {
       method: "GET", // default, so we can ignore
@@ -52,6 +57,17 @@ export default function JobPosts() {
         ));
         setJobPosts(jobs);
       });
+  }, []);
+
+  //useeffect to check if user is logged in
+  useEffect(() => {
+    if (!context) {
+      navigate("/login");
+    } else {
+      if (context.profileType === "Applicant") {
+        navigate("/UpdateProfile");
+      }
+    }
   }, []);
 
   return (

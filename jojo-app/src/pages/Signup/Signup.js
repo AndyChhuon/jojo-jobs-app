@@ -1,5 +1,5 @@
 import "./Signup.less";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
@@ -7,11 +7,16 @@ import jojoLogo from "../../Images/jojo-black.png";
 import { GoogleLogin } from "react-google-login";
 import { LinkContainer } from "react-router-bootstrap";
 import { gapi } from "gapi-script";
+import Alert from "react-bootstrap/Alert";
+import { useNavigate } from "react-router-dom";
+import { sha256 } from "js-sha256";
+import { useLocation } from "react-router-dom";
 
 const clientId =
   "124118979451-5b03pb63uv3ogjgntaimga7tc4uirqcf.apps.googleusercontent.com";
 
 export default function Signup() {
+  //Initialise Google API
   useEffect(() => {
     function start() {
       gapi.client.init({
@@ -23,11 +28,130 @@ export default function Signup() {
     gapi.load("client:auth2", start);
   }, []);
 
-  const onSuccess = (response) => {
-    console.log(response.profileObj);
+  //If coming from login, display message
+  const { search } = useLocation();
+  const parameters = new URLSearchParams(search);
+  const [connectedGoogle, setConnectedGoogle] = useState(false);
+
+  //Send to api when connected to google
+  useEffect(() => {
+    if (connectedGoogle) {
+      setConnectedGoogle(false);
+      sendToApi();
+    }
+  }, [connectedGoogle]);
+
+  const navigate = useNavigate();
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [profileImg, setProfileImg] = useState("");
+  const [confirmpassword, setconfirmPassword] = useState("");
+  const [termsAndConditions, settermsAndConditions] = useState(false);
+
+  const [error, setError] = useState(
+    parameters.get("initDisplayError") ? parameters.get("initDisplayError") : ""
+  );
+
+  //Send data to API
+  const sendToApi = () => {
+    let hashedPassword = password;
+    if (hashedPassword && hashedPassword !== "Google") {
+      hashedPassword = sha256(hashedPassword);
+    }
+
+    const url =
+      "?&email=" +
+      email +
+      "&pass=" +
+      hashedPassword +
+      "&FirstName=" +
+      firstName +
+      "&LastName=" +
+      lastName +
+      "&ProfileImg=" +
+      profileImg;
+
+    fetch(
+      "https://jobapplicationsapi.azurewebsites.net/api/JobApplicantsAPI" + url,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "text/plain",
+        },
+      }
+    ).then((response) => {
+      if (response.ok) {
+        setError(false);
+        navigate(
+          "/login?initDisplaySuccess=Account created successfully. Please login."
+        );
+      } else if (response.status === 400) {
+        response.text().then((text) => {
+          navigate("/login?initDisplayError=" + text);
+        });
+      }
+    });
   };
-  const onFailure = (response) => {
-    console.log(response);
+
+  //Handle form submit
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setError("");
+    if (password !== confirmpassword) {
+      setError("Passwords do not match.");
+      return;
+    }
+    //Check password length above 8 characters and has at least one number
+    else if (password.length < 8 || !/\d/.test(password)) {
+      setError("Password must be at least 8 characters and contain a number.");
+      return;
+    }
+    //Check email is valid
+    else if (!/\S+@\S+\.\S+/.test(email)) {
+      setError("Please enter a valid email address.");
+      return;
+    } else if (!termsAndConditions) {
+      setError("Please accept the terms and conditions.");
+      return;
+    } else {
+      sendToApi();
+    }
+  };
+
+  const onEmailChange = (e) => {
+    setEmail(e.target.value);
+  };
+  const onPasswordChange = (e) => {
+    setPassword(e.target.value);
+  };
+  const onConfirmPasswordChange = (e) => {
+    setconfirmPassword(e.target.value);
+  };
+
+  const onSuccess = (response) => {
+    setError("");
+
+    const email = response.profileObj.email;
+    const givenName = response.profileObj.givenName;
+    const familyName = response.profileObj.familyName;
+    const imageUrl = response.profileObj.imageUrl;
+
+    if (!email) {
+      setError("Something went wrong.");
+      return;
+    } else if (!termsAndConditions) {
+      setError("Please accept the terms and conditions.");
+      return;
+    }
+    setEmail(email);
+    givenName ? setFirstName(givenName) : setFirstName("");
+    familyName ? setLastName(familyName) : setLastName("");
+    imageUrl ? setProfileImg(imageUrl) : setProfileImg("");
+    setPassword("Google");
+    setConnectedGoogle(true);
   };
   return (
     <div className="signup">
@@ -41,15 +165,21 @@ export default function Signup() {
               </div>
             </LinkContainer>
 
-            <form className="login-form-container">
+            <form className="login-form-container" onSubmit={handleSubmit}>
               <div className="login-form">
                 <h1>Create a new account</h1>
                 <p>It's quick and easy.</p>
+                <Alert
+                  variant="danger"
+                  className="alert"
+                  style={error ? { display: "block" } : { display: "none" }}
+                >
+                  {error}
+                </Alert>
                 <GoogleLogin
                   clientId={clientId}
                   buttonText="Sign Up With Google"
                   onSuccess={onSuccess}
-                  onFailure={onFailure}
                   cookiePolicy={"single_host_origin"}
                   className="google-login"
                 />
@@ -63,6 +193,7 @@ export default function Signup() {
                   type="email"
                   placeholder="Email"
                   className="email-input"
+                  onChange={onEmailChange}
                   required
                 ></input>
 
@@ -70,12 +201,14 @@ export default function Signup() {
                   type="password"
                   placeholder="Password"
                   className="email-input pass-input"
+                  onChange={onPasswordChange}
                   required
                 ></input>
                 <input
                   type="password"
                   placeholder="Confirm Password"
                   className="email-input pass-input"
+                  onChange={onConfirmPasswordChange}
                   required
                 ></input>
                 <div className="remember_forgot_container">
@@ -84,6 +217,9 @@ export default function Signup() {
                       className="remember-checkbox"
                       type="checkbox"
                       id="remember-checkbox"
+                      onChange={() =>
+                        settermsAndConditions(!termsAndConditions)
+                      }
                     ></input>
                     <label htmlFor="remember-checkbox">
                       Accept
@@ -100,7 +236,7 @@ export default function Signup() {
 
                 <div className="no-account-container">
                   Already have an account?
-                  <LinkContainer to="/">
+                  <LinkContainer to="/login">
                     <a>Login</a>
                   </LinkContainer>
                 </div>
