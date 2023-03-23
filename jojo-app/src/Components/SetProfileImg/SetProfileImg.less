@@ -1,0 +1,133 @@
+.setProfileImg {
+
+    .profileImgContainer {
+        text-align: center;
+        aspect-ratio: 1 / 1;
+        height: 200px;
+        margin: auto;
+        border-radius: 50px !important;
+
+
+        .image {
+            width: 100%;
+            height: 100%;
+            border-radius: 50px !important;
+
+        }
+
+        .overlay {
+            width: 100%;
+            height: 100%;
+            transform: translateY(-100%);
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+
+        }
+
+        .iconEdit {
+            height: 20%;
+            color: rgba(218, 165, 32, 0.711);
+        }
+
+        .file-upload {
+            display: none;
+        }
+    }
+
+    .profileImgContainer:hover {
+        .overlay {
+            display: flex;
+            border-radius: 50px !important;
+
+        }
+    }
+
+    .popover-positioned-right:hover+.overlay {
+        display: none;
+    }
+
+
+    .crop-image {
+        margin-top: 20px;
+        font-size: 20px;
+    }
+
+
+
+    #popover-positioned-right {
+        position: absolute;
+        transform: translateX(220px) translateY(-150px);
+        width: 40vw;
+        max-width: none;
+
+        .close-btn {
+            float: right;
+            cursor: pointer;
+        }
+    }
+
+    #popover-positioned-bottom {
+        position: absolute;
+        margin-top: 10px;
+        z-index: 10;
+        width: 80vw;
+        max-width: none;
+
+        .close-btn {
+            float: right;
+            cursor: pointer;
+        }
+    }
+
+    //below 1020
+    @media (max-width: 1020px) {
+        #popover-positioned-right {
+            width: 60vw;
+
+        }
+    }
+
+    //below 1020
+    @media (max-width: 775px) {
+        #popover-positioned-right {
+            width: 50vw;
+
+        }
+    }
+
+    .popover-arrow {
+        height: 0 !important;
+    }
+
+    .popover-arrow::before {
+        left: -8px !important;
+        top: 10px;
+        border-right-color: #b6b6b6 !important;
+    }
+
+    .popover-arrow::after {
+        visibility: hidden;
+    }
+
+
+    //below 576
+    @media (max-width: 576px) {
+        #popover-positioned-right {
+            transform: none;
+            width: 80vw;
+            margin-top: 20px;
+            transform: translateX(-10vw);
+        }
+
+        .popover-arrow::before {
+            left: 20px !important;
+            top: -12px;
+            border-right-color: #cdcdcd !important;
+            rotate: 90deg;
+        }
+    }
+
+}

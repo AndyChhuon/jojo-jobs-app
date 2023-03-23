@@ -8,12 +8,19 @@ import ManagePosts from "./pages/ManagePosts/ManagePosts";
 import Login from "./pages/Login/Login";
 import Signup from "./pages/Signup/Signup";
 import Applications from "./pages/Applications/Applications";
-import { createContext, useState } from "react";
+import { createContext, useState, useEffect } from "react";
 const userLogin = createContext();
 
 function App() {
   const [context, setContext] = useState(null);
-
+  useEffect(() => {
+    //Warm up api (could also pay for Azure premium)
+    fetch("https://jobapplicationsapi.azurewebsites.net/api/JobPostsAPI", {
+      method: "GET", // default, so we can ignore
+    }).then(() => {
+      // console.log("api warmed up");
+    });
+  }, []);
   return (
     <userLogin.Provider value={[context, setContext]}>
       <Navbar />
