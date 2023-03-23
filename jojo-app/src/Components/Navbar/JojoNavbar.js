@@ -9,6 +9,7 @@ import NavDropdown from "react-bootstrap/NavDropdown";
 import { LinkContainer } from "react-router-bootstrap";
 import { useContext } from "react";
 import { userLogin } from "../../App";
+import Cookies from "universal-cookie";
 
 export default function JojoNavbar() {
   const [context, setContext] = useContext(userLogin);
@@ -22,6 +23,8 @@ export default function JojoNavbar() {
 
   const signOut = () => {
     setContext(null);
+    const cookies = new Cookies();
+    cookies.remove("Jwt", { path: "/" });
   };
 
   return (

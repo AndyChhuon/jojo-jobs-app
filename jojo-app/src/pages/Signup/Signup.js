@@ -9,7 +9,6 @@ import { LinkContainer } from "react-router-bootstrap";
 import { gapi } from "gapi-script";
 import Alert from "react-bootstrap/Alert";
 import { useNavigate } from "react-router-dom";
-import { sha256 } from "js-sha256";
 import { useLocation } from "react-router-dom";
 
 const clientId =
@@ -57,32 +56,21 @@ export default function Signup() {
 
   //Send data to API
   const sendToApi = () => {
-    let hashedPassword = password;
-    if (hashedPassword && hashedPassword !== "Google") {
-      hashedPassword = sha256(hashedPassword);
-    }
+    const loginInfo = {
+      email: email,
+      password: password,
+      firstName: firstName,
+      lastName: lastName,
+      profileImg: profileImg,
+    };
 
-    const url =
-      "?&email=" +
-      email +
-      "&pass=" +
-      hashedPassword +
-      "&FirstName=" +
-      firstName +
-      "&LastName=" +
-      lastName +
-      "&ProfileImg=" +
-      profileImg;
-
-    fetch(
-      "https://jobapplicationsapi.azurewebsites.net/api/JobApplicantsAPI" + url,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "text/plain",
-        },
-      }
-    ).then((response) => {
+    fetch("https://jobapplicationsapi.azurewebsites.net/api/JobApplicantsAPI", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(loginInfo),
+    }).then((response) => {
       if (response.ok) {
         setError(false);
         navigate(

@@ -7,11 +7,11 @@ import jojoLogo from "../../Images/jojo-black.png";
 import { GoogleLogin } from "react-google-login";
 import { LinkContainer } from "react-router-bootstrap";
 import { gapi } from "gapi-script";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Alert from "react-bootstrap/Alert";
-import { sha256 } from "js-sha256";
-import { useNavigate } from "react-router-dom";
 import { userLogin } from "../../App";
+import jwt from "jwt-decode";
+import Cookies from "universal-cookie";
 
 const clientId =
   "124118979451-5b03pb63uv3ogjgntaimga7tc4uirqcf.apps.googleusercontent.com";
@@ -30,6 +30,13 @@ export default function Login() {
 
     gapi.load("client:auth2", start);
   }, []);
+
+  //If user is logged in, redirect to update profile
+  useEffect(() => {
+    if (context) {
+      navigate("/UpdateProfile");
+    }
+  }, [context]);
 
   const [connectedGoogle, setConnectedGoogle] = useState(false);
 
@@ -62,12 +69,7 @@ export default function Login() {
 
   //Send data to API
   const sendToApi = () => {
-    let hashedPassword = password;
-    if (hashedPassword && hashedPassword !== "Google") {
-      hashedPassword = sha256(hashedPassword);
-    }
-
-    const url = "?email=" + email + "&pass=" + hashedPassword;
+    const url = "?email=" + email + "&password=" + password;
 
     fetch(
       "https://jobapplicationsapi.azurewebsites.net/api/JobApplicantsAPI/login" +
@@ -81,9 +83,36 @@ export default function Login() {
     ).then((response) => {
       if (response.ok) {
         response.text().then((text) => {
-          setContext(JSON.parse(text));
+          const decodedJwt = jwt(text);
+          const cookieExp = new Date(parseInt(decodedJwt.exp) * 1000);
+          //Store jwt as cookie
+          const cookies = new Cookies();
+          cookies.set("Jwt", text, {
+            path: "/",
+            expires: cookieExp,
+          });
+
+          // Fetch user info from api using id from jwt
+          const applicantId =
+            decodedJwt[
+              "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"
+            ];
+          //Fetch user info from api
+          fetch(
+            "https://jobapplicationsapi.azurewebsites.net/api/JobApplicantsAPI/" +
+              applicantId,
+            {
+              method: "GET",
+            }
+          ).then((response) => {
+            if (response.ok) {
+              response.json().then((json) => {
+                setContext(json);
+              });
+            }
+          });
           setError(false);
-          navigate("/UpdateProfile");
+          // navigate("/UpdateProfile");
         });
       } else if (response.status === 400) {
         response.text().then((text) => {
