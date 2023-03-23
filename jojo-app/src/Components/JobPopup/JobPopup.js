@@ -11,12 +11,17 @@ import DeleteJobPopup from "../DeleteJobPopup/DeleteJobPopup";
 import { useContext } from "react";
 import { userLogin } from "../../App";
 import { useNavigate } from "react-router-dom";
+import Alert from "react-bootstrap/Alert";
+import Cookies from "universal-cookie";
 
 export default function JobPopup(props) {
   const [show, setShow] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const [showDelete, setShowDelete] = useState(false);
   const [context, setContext] = useContext(userLogin);
+  const [coverLetterFile, setCoverLetterFile] = useState(null);
   const navigate = useNavigate();
 
   const handleClose = () => setShow(false);
@@ -24,20 +29,8 @@ export default function JobPopup(props) {
   const handleShowEdit = () => setShowEdit(true);
   const handleShowDelete = () => setShowDelete(true);
 
-  const handleApply = () => {
-    if (!context) {
-      navigate("/login?initDisplayError=Please login to apply for this job.");
-    }
-    if (context?.profileType === "Recruiter") {
-      navigate(
-        "/UpdateProfile?initDisplayError=Recruiters cannot apply for jobs. Change profile type."
-      );
-    }
-    if (!context?.cv) {
-      navigate(
-        "/UpdateProfile?initDisplayError=Please upload a CV to apply for this job."
-      );
-    }
+  const handleCoverLetterInputChange = (event) => {
+    setCoverLetterFile(event.target.files[0]);
   };
 
   const {
@@ -48,6 +41,7 @@ export default function JobPopup(props) {
     jobId,
     benefits,
     icon = false,
+    myApplications = false,
   } = props.info;
 
   let { workType, workTime } = props.info;
@@ -67,39 +61,137 @@ export default function JobPopup(props) {
       break;
   }
 
+  async function handleApply() {
+    const cookies = new Cookies();
+    setError("");
+    setSuccess("");
+    if (!context) {
+      navigate("/login?initDisplayError=Please login to apply for this job.");
+    }
+    if (!cookies.get("Jwt")) {
+      navigate(
+        "/login?initDisplayError=You have been disconnected. Please login again."
+      );
+    }
+    if (context?.profileType === "Recruiter") {
+      navigate(
+        "/UpdateProfile?initDisplayError=Recruiters cannot apply for jobs. Change profile type."
+      );
+    }
+    if (!context?.cv) {
+      navigate(
+        "/UpdateProfile?initDisplayError=Please setup Profile and CV to apply for this job."
+      );
+    }
+    if (!coverLetterFile) {
+      setError("Please upload a cover letter.");
+      return;
+    }
+
+    // Create cover letter form data from file
+    const formData = new FormData();
+    formData.append("formFile", coverLetterFile);
+
+    // Send the form data to the server using fetch()
+    let resumeURL = await fetch(
+      "https://jobapplicationsapi.azurewebsites.net/api/AwsAPI/CoverLetter?studentId=" +
+        context.id +
+        "&jobPostId=" +
+        jobId,
+      {
+        method: "POST",
+        body: formData,
+      }
+    )
+      .then((response) => response.text())
+      .then((data) => {
+        return data;
+      });
+
+    console.log(resumeURL);
+
+    // Update appliedTo array
+    fetch(
+      "https://jobapplicationsapi.azurewebsites.net/api/JobApplicantsAPI/updateJobs/" +
+        context.id +
+        "?JobId=" +
+        jobId,
+      {
+        method: "PUT",
+        headers: {
+          Authorization: "Bearer " + cookies.get("Jwt"),
+          accept: "text/plain",
+        },
+      }
+    )
+      .then((response) => {
+        if (response.ok) {
+          setSuccess("Job Application sent successfully.");
+        } else {
+          setError("Error applying to job. Please try again.");
+        }
+      })
+      .catch((error) => {
+        setError("Error applying to job. Please try again.");
+      });
+  }
+
   return (
     <>
       <Col xs={3} md={3} sm={3} className="center-button">
         {icon ? (
-          <>
-            <Button
-              className="button edit-btn"
-              variant="secondary"
-              size="sm"
-              onClick={handleShowEdit}
-              style={{ width: "35px", padding: "5px", marginRight: "3px" }}
-            >
-              <FontAwesomeIcon icon={faEdit} />
-            </Button>
-            <Button
-              className="button"
-              variant="secondary"
-              size="sm"
-              onClick={handleShow}
-              style={{ width: "35px", padding: "5px", marginRight: "3px" }}
-            >
-              <FontAwesomeIcon icon={faEye} />
-            </Button>
-            <Button
-              className="button delete-btn"
-              variant="secondary"
-              size="sm"
-              onClick={handleShowDelete}
-              style={{ width: "35px", padding: "5px" }}
-            >
-              <FontAwesomeIcon icon={faTrashCan} />
-            </Button>
-          </>
+          myApplications ? (
+            <>
+              <Button
+                className="button edit-btn"
+                variant="secondary"
+                size="sm"
+                onClick={handleShow}
+                style={{ width: "35px", padding: "5px", marginRight: "3px" }}
+              >
+                <FontAwesomeIcon icon={faEdit} />
+              </Button>
+              <Button
+                className="button delete-btn"
+                variant="secondary"
+                size="sm"
+                onClick={handleShowDelete}
+                style={{ width: "35px", padding: "5px" }}
+              >
+                <FontAwesomeIcon icon={faTrashCan} />
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button
+                className="button edit-btn"
+                variant="secondary"
+                size="sm"
+                onClick={handleShowEdit}
+                style={{ width: "35px", padding: "5px", marginRight: "3px" }}
+              >
+                <FontAwesomeIcon icon={faEdit} />
+              </Button>
+              <Button
+                className="button"
+                variant="secondary"
+                size="sm"
+                onClick={handleShow}
+                style={{ width: "35px", padding: "5px", marginRight: "3px" }}
+              >
+                <FontAwesomeIcon icon={faEye} />
+              </Button>
+              <Button
+                className="button delete-btn"
+                variant="secondary"
+                size="sm"
+                onClick={handleShowDelete}
+                style={{ width: "35px", padding: "5px" }}
+              >
+                <FontAwesomeIcon icon={faTrashCan} />
+              </Button>
+            </>
+          )
         ) : (
           <Button
             className="button"
@@ -130,11 +222,35 @@ export default function JobPopup(props) {
             {jobLocation} • {workType}
           </span>
           <span className="new-line p1">{workTime}</span>
-          <Form.Group controlId="formFileSm" className="mb-3 upload">
+          <Form.Group
+            controlId="formFileSm"
+            className="upload"
+            style={
+              myApplications
+                ? { marginBottom: "none" }
+                : { marginBottom: "1rem" }
+            }
+          >
             <p className="padding-5">📝 Cover Letter (PDF)</p>
 
-            <Form.Control type="file" accept="application/pdf" size="sm" />
+            <Form.Control
+              type="file"
+              onChange={handleCoverLetterInputChange}
+              accept="application/pdf"
+              size="sm"
+            />
           </Form.Group>
+          {myApplications ? (
+            <a
+              target="_blank"
+              className="cover-letter-link"
+              href={`https://jobapplicants-bucket.s3.us-east-2.amazonaws.com/Cover_letter/${jobId}/${context.id}.pdf`}
+            >
+              Cover Letter - Current
+            </a>
+          ) : (
+            ""
+          )}
           <h3 className="job-detail">Job detail</h3>
           <span>&#x1F4BC; Job type</span>
           <div className="job-type-tags">
@@ -156,11 +272,29 @@ export default function JobPopup(props) {
           <span className="full-description p2">{fullDescription}</span>
         </Modal.Body>
         <Modal.Footer>
+          <Alert
+            variant="danger"
+            className="alert"
+            style={error ? { display: "block" } : { display: "none" }}
+          >
+            {error}
+          </Alert>
+          <Alert
+            variant="success"
+            className="alert"
+            style={success ? { display: "block" } : { display: "none" }}
+          >
+            {success}
+          </Alert>
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
-          {icon ? (
-            ":"
+          {myApplications ? (
+            <Button variant="primary" onClick={handleApply}>
+              Edit Application
+            </Button>
+          ) : icon ? (
+            <></>
           ) : (
             <Button variant="primary" onClick={handleApply}>
               Apply Now

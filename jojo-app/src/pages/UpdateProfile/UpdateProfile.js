@@ -4,7 +4,7 @@ import Container from "react-bootstrap/Container";
 import "./UpdateProfile.less";
 // import profile from "./../../Images/pfp.png";
 import Header from "../../Components/Header/Header";
-import { useContext } from "react";
+import { useContext, useRef } from "react";
 import { userLogin } from "../../App";
 import { useNavigate, useLocation } from "react-router-dom";
 import Alert from "react-bootstrap/Alert";
@@ -14,6 +14,8 @@ import SetProfileImg from "../../Components/SetProfileImg/SetProfileImg";
 export default function UpdateProfile() {
   const [context, setContext] = useContext(userLogin);
   const navigate = useNavigate();
+
+  const errorRef = useRef(null);
 
   const [student, setStudent] = useState(context);
 
@@ -106,8 +108,8 @@ export default function UpdateProfile() {
 
     //If profile image was changed
     if (profileHasChanged) {
-      //Convert data url to file
-      const file = dataURLtoFile(croppedImg, "profile.png");
+      //Convert data url to file (use math.random to avoid caching issue)
+      const file = dataURLtoFile(croppedImg, Math.random() + "profile.png");
 
       // Create image form data
       const formData = new FormData();
@@ -129,6 +131,7 @@ export default function UpdateProfile() {
         });
 
       newStudent.profileImg = ImageUrl;
+      console.log(ImageUrl);
     }
 
     const cookies = new Cookies();
@@ -210,6 +213,12 @@ export default function UpdateProfile() {
       navigate("/login");
     }
   }, []);
+
+  useEffect(() => {
+    if (error) {
+      errorRef.current.scrollIntoView();
+    }
+  }, [error]);
 
   return (
     <>
@@ -429,6 +438,7 @@ export default function UpdateProfile() {
               <Alert
                 variant="danger"
                 className="alert"
+                ref={errorRef}
                 style={error ? { display: "block" } : { display: "none" }}
               >
                 {error}
