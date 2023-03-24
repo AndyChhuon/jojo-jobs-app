@@ -4,9 +4,12 @@ import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import "./CreateJobPopup.less";
 import Alert from "react-bootstrap/Alert";
+import { useNavigate } from "react-router-dom";
+import Cookies from "universal-cookie";
 
 export default function CreateJobPopup(props) {
   let { show, setShowCreate, updatePosts } = props.info;
+  const navigate = useNavigate();
 
   const [jobTitleCreate, setJobTitleCreate] = useState("");
   const [jobLocationCreate, setJobLocationCreate] = useState("");
@@ -92,12 +95,17 @@ export default function CreateJobPopup(props) {
       workTime: workTimeCreate,
     };
 
-    console.log(jobInfo);
+    const cookies = new Cookies();
+    const jwt = cookies.get("Jwt");
+    if (!jwt) {
+      navigate("/login");
+    }
 
     fetch("https://jobapplicationsapi.azurewebsites.net/api/JobPostsAPI", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Authorization: "Bearer " + jwt,
       },
       body: JSON.stringify(jobInfo),
     }).then((response) => {

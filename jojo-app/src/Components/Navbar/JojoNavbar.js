@@ -7,16 +7,41 @@ import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
 import { LinkContainer } from "react-router-bootstrap";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { userLogin } from "../../App";
 import Cookies from "universal-cookie";
 
 export default function JojoNavbar() {
   const [context, setContext] = useContext(userLogin);
+  const [hasNotifications, setHasNotifications] = useState(false);
+
+  useEffect(() => {
+    if (context) {
+      if (Object.keys(context?.jobNotification).length > 0) {
+        setHasNotifications(true);
+      } else {
+        setHasNotifications(false);
+      }
+    } else {
+      setHasNotifications(false);
+    }
+  }, [context]);
 
   const navDropdownTitle = (
     <span style={{ color: "white" }}>
-      <FontAwesomeIcon className="pad-right-5" icon={faUser} />
+      <span>
+        <FontAwesomeIcon
+          className={hasNotifications && context ? "" : "pad-right-5"}
+          icon={faUser}
+        />
+        {hasNotifications && context ? (
+          <span className="badge">
+            {Object.keys(context?.jobNotification).length}
+          </span>
+        ) : (
+          ""
+        )}
+      </span>
       profile
     </span>
   );

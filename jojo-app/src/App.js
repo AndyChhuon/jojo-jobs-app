@@ -3,6 +3,7 @@ import Navbar from "./Components/Navbar/JojoNavbar";
 import { Route, Routes } from "react-router-dom";
 //import UpdateProfile
 import UpdateProfile from "./pages/UpdateProfile/UpdateProfile";
+import ViewApplications from "./pages/ViewApplications/ViewApplications";
 import JobPosts from "./pages/JobPosts/JobPosts";
 import ManagePosts from "./pages/ManagePosts/ManagePosts";
 import Login from "./pages/Login/Login";
@@ -70,6 +71,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/applications" element={<Applications />} />
+        <Route path="/ViewApplications" element={<ViewApplications />} />
       </Routes>
     </userLogin.Provider>
   );

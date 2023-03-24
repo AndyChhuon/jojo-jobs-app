@@ -368,6 +368,7 @@ export default function UpdateProfile() {
                     type="file"
                     id="resume"
                     name="resume"
+                    accept="application/pdf"
                     className="form-control upload-resume"
                     required={student?.cv ? false : true}
                     onChange={handleResumeInputChange}

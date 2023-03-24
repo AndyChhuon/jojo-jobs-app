@@ -6,9 +6,11 @@ import "./DeleteJobPopup.less";
 import Alert from "react-bootstrap/Alert";
 import Cookies from "universal-cookie";
 import { userLogin } from "../../App";
+import { useNavigate } from "react-router-dom";
 
 export default function DeleteJobPopup(props) {
   let { show, setShowDelete, updatePosts, jobId, myApplications } = props.info;
+  const navigate = useNavigate();
 
   const [showError, setShowError] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
@@ -24,10 +26,12 @@ export default function DeleteJobPopup(props) {
     setShowError(false);
 
     e.preventDefault();
-
+    const cookies = new Cookies();
+    const jwt = cookies.get("Jwt");
+    if (!jwt) {
+      navigate("/login");
+    }
     if (myApplications) {
-      const cookies = new Cookies();
-
       fetch(
         "https://jobapplicationsapi.azurewebsites.net/api/JobApplicantsAPI/removeJobs/" +
           context.id +
@@ -37,7 +41,7 @@ export default function DeleteJobPopup(props) {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
-            Authorization: "Bearer " + cookies.get("Jwt"),
+            Authorization: "Bearer " + jwt,
           },
         }
       ).then((response) => {
@@ -53,6 +57,9 @@ export default function DeleteJobPopup(props) {
         "https://jobapplicationsapi.azurewebsites.net/api/JobPostsAPI/" + jobId,
         {
           method: "DELETE",
+          headers: {
+            Authorization: "Bearer " + jwt,
+          },
         }
       ).then((response) => {
         if (response.ok) {

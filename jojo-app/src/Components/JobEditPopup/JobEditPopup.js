@@ -4,8 +4,12 @@ import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import "./JobEditPopup.less";
 import Alert from "react-bootstrap/Alert";
+import { useNavigate } from "react-router-dom";
+import Cookies from "universal-cookie";
 
 export default function JobEditPopup(props) {
+  const navigate = useNavigate();
+
   let {
     jobId,
     jobTitle,
@@ -113,12 +117,19 @@ export default function JobEditPopup(props) {
       workTime: workTimeEdit,
     };
 
+    const cookies = new Cookies();
+    const jwt = cookies.get("Jwt");
+    if (!jwt) {
+      navigate("/login");
+    }
+
     fetch(
       "https://jobapplicationsapi.azurewebsites.net/api/JobPostsAPI/" + jobId,
       {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
+          Authorization: "Bearer " + jwt,
         },
         body: JSON.stringify(jobInfo),
       }
