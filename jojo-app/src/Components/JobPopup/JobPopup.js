@@ -44,6 +44,10 @@ export default function JobPopup(props) {
     myApplications = false,
   } = props.info;
 
+  const handleViewApps = () => {
+    navigate("/ViewApplications?jobId=" + jobId);
+  };
+
   let { workType, workTime } = props.info;
 
   switch (workTime) {
@@ -108,8 +112,6 @@ export default function JobPopup(props) {
         return data;
       });
 
-    console.log(resumeURL);
-
     // Update appliedTo array
     fetch(
       "https://jobapplicationsapi.azurewebsites.net/api/JobApplicantsAPI/updateJobs/" +
@@ -141,56 +143,71 @@ export default function JobPopup(props) {
       <Col xs={3} md={3} sm={3} className="center-button">
         {icon ? (
           myApplications ? (
-            <>
-              <Button
-                className="button edit-btn"
-                variant="secondary"
-                size="sm"
-                onClick={handleShow}
-                style={{ width: "35px", padding: "5px", marginRight: "3px" }}
-              >
-                <FontAwesomeIcon icon={faEdit} />
-              </Button>
-              <Button
-                className="button delete-btn"
-                variant="secondary"
-                size="sm"
-                onClick={handleShowDelete}
-                style={{ width: "35px", padding: "5px" }}
-              >
-                <FontAwesomeIcon icon={faTrashCan} />
-              </Button>
-            </>
+            <div>
+              <div>
+                <Button
+                  className="button edit-btn width-100"
+                  variant="secondary"
+                  size="sm"
+                  onClick={handleShow}
+                >
+                  Edit <FontAwesomeIcon icon={faEdit} />
+                </Button>
+              </div>
+              <div>
+                <Button
+                  className="button delete-btn width-100"
+                  variant="secondary"
+                  size="sm"
+                  onClick={handleShowDelete}
+                  style={{ marginTop: "5px" }}
+                >
+                  Delete <FontAwesomeIcon icon={faTrashCan} />
+                </Button>
+              </div>
+            </div>
           ) : (
-            <>
-              <Button
-                className="button edit-btn"
-                variant="secondary"
-                size="sm"
-                onClick={handleShowEdit}
-                style={{ width: "35px", padding: "5px", marginRight: "3px" }}
-              >
-                <FontAwesomeIcon icon={faEdit} />
-              </Button>
-              <Button
-                className="button"
-                variant="secondary"
-                size="sm"
-                onClick={handleShow}
-                style={{ width: "35px", padding: "5px", marginRight: "3px" }}
-              >
-                <FontAwesomeIcon icon={faEye} />
-              </Button>
-              <Button
-                className="button delete-btn"
-                variant="secondary"
-                size="sm"
-                onClick={handleShowDelete}
-                style={{ width: "35px", padding: "5px" }}
-              >
-                <FontAwesomeIcon icon={faTrashCan} />
-              </Button>
-            </>
+            <div>
+              <div>
+                <Button
+                  className="button edit-btn"
+                  variant="secondary"
+                  size="sm"
+                  onClick={handleShowEdit}
+                  style={{ width: "35px", padding: "5px", marginRight: "3px" }}
+                >
+                  <FontAwesomeIcon icon={faEdit} />
+                </Button>
+                <Button
+                  className="button"
+                  variant="secondary"
+                  size="sm"
+                  onClick={handleShow}
+                  style={{ width: "35px", padding: "5px", marginRight: "3px" }}
+                >
+                  <FontAwesomeIcon icon={faEye} />
+                </Button>
+                <Button
+                  className="button delete-btn"
+                  variant="secondary"
+                  size="sm"
+                  onClick={handleShowDelete}
+                  style={{ width: "35px", padding: "5px" }}
+                >
+                  <FontAwesomeIcon icon={faTrashCan} />
+                </Button>
+              </div>
+              <div>
+                <Button
+                  className="button view-apps-btn"
+                  variant="secondary"
+                  size="sm"
+                  onClick={handleViewApps}
+                >
+                  <span>View Apps</span>
+                </Button>
+              </div>
+            </div>
           )
         ) : (
           <Button
@@ -210,7 +227,9 @@ export default function JobPopup(props) {
 
       <Modal show={show} onHide={handleClose} className="popup">
         <Modal.Header closeButton>
-          <Modal.Title>Apply to Job</Modal.Title>
+          <Modal.Title>
+            {myApplications ? "Edit Job Application" : "Apply to Job"}
+          </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <h2>{jobTitle}</h2>

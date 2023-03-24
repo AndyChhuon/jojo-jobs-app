@@ -15,9 +15,13 @@ export default function JobPosts() {
   const navigate = useNavigate();
 
   const updatePosts = () => {
-    fetch("https://jobapplicationsapi.azurewebsites.net/api/JobPostsAPI", {
-      method: "GET", // default, so we can ignore
-    })
+    fetch(
+      "https://jobapplicationsapi.azurewebsites.net/api/JobApplicantsAPI/CreatedJobs/" +
+        context.id,
+      {
+        method: "GET", // default, so we can ignore
+      }
+    )
       .then((response) => response.json())
       .then((data) => {
         let jobs = data.map((info) => (
@@ -28,35 +32,33 @@ export default function JobPosts() {
         ));
         setJobPosts(jobs);
       });
+
+    fetch(
+      "https://jobapplicationsapi.azurewebsites.net/api/JobApplicantsAPI/" +
+        context.id,
+      {
+        method: "GET",
+      }
+    ).then((response) => {
+      if (response.ok) {
+        response.json().then((json) => {
+          setContext(json);
+        });
+      }
+    });
   };
 
   const [showCreate, setShowCreate] = useState(false);
   const handleShowCreate = () => setShowCreate(true);
 
   const loading = (
-    <div className="jobs-loading-container">
+    <div className="jobs-loading-container" key="loading">
       <span className="search-text">Searching...</span>
       <Spinner animation="border" size="sm" />
     </div>
   );
 
   const [jobPosts, setJobPosts] = useState([loading]);
-  //Fetch api search state
-  useEffect(() => {
-    fetch("https://jobapplicationsapi.azurewebsites.net/api/JobPostsAPI", {
-      method: "GET", // default, so we can ignore
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        let jobs = data.map((info) => (
-          <JobPost
-            key={info.jobId}
-            info={{ updatePosts, icon: true, ...info }}
-          />
-        ));
-        setJobPosts(jobs);
-      });
-  }, []);
 
   //useeffect to check if user is logged in
   useEffect(() => {
@@ -66,6 +68,23 @@ export default function JobPosts() {
       if (context.profileType === "Applicant") {
         navigate("/UpdateProfile");
       }
+      fetch(
+        "https://jobapplicationsapi.azurewebsites.net/api/JobApplicantsAPI/CreatedJobs/" +
+          context.id,
+        {
+          method: "GET", // default, so we can ignore
+        }
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          let jobs = data.map((info) => (
+            <JobPost
+              key={info.jobId}
+              info={{ updatePosts, icon: true, ...info }}
+            />
+          ));
+          setJobPosts(jobs);
+        });
     }
   }, []);
 
@@ -78,7 +97,10 @@ export default function JobPosts() {
       <div className="ManagePosts">
         <Container className="ManageJobPosts">
           <Row>
-            <div className="Jobs-Header">Showing 1-8 of 8 Results</div>
+            <div className="Jobs-Header">
+              Showing {jobPosts.length == 0 ? "0" : "1"}-{jobPosts.length} of{" "}
+              {jobPosts.length} Results
+            </div>
           </Row>
         </Container>
 

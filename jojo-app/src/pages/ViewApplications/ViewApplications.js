@@ -1,15 +1,21 @@
-import "./Applications.less";
+import "./ViewApplications.less";
 import Header from "../../Components/Header/Header";
-import { useContext, useEffect, useState } from "react";
 import { userLogin } from "../../App";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Spinner from "react-bootstrap/Spinner";
-import JobPost from "../../Components/JobPost/JobPost";
+import ApplicantDisplay from "../../Components/ApplicantDisplay/ApplicantDisplay";
 
-export default function Applications() {
+export default function ViewApplications() {
   const [context, setContext] = useContext(userLogin);
+
+  //Get job id from url
+  const { search } = useLocation();
+  const parameters = new URLSearchParams(search);
+  const jobId = parameters.get("jobId");
+
   const navigate = useNavigate();
 
   const loading = (
@@ -18,22 +24,25 @@ export default function Applications() {
       <Spinner animation="border" size="sm" />
     </div>
   );
+
   const [jobPosts, setJobPosts] = useState([loading]);
 
   const updatePosts = () => {
     fetch(
-      "https://jobapplicationsapi.azurewebsites.net/api/JobApplicantsAPI/AppliedJobs/" +
-        context.id,
+      "https://jobapplicationsapi.azurewebsites.net/api/JobPostsAPI/GetApplicants/" +
+        jobId,
       {
         method: "GET", // default, so we can ignore
       }
     )
       .then((response) => response.json())
       .then((data) => {
-        let jobs = data.map((info) => (
-          <JobPost
-            key={info.jobId}
-            info={{ icon: true, ...info, myApplications: true, updatePosts }}
+        const jobId = parameters.get("jobId");
+
+        let jobs = data.map((applicant) => (
+          <ApplicantDisplay
+            key={applicant.id}
+            info={{ ...applicant, updatePosts, jobId }}
           />
         ));
         setJobPosts(jobs);
@@ -54,27 +63,30 @@ export default function Applications() {
     });
   };
 
-  //useeffect to check if user is logged in
   useEffect(() => {
     if (!context) {
       navigate("/login");
-    } else {
-      if (context.profileType === "Recruiter") {
-        navigate("/UpdateProfile");
-      }
-
-      //Get all jobs applied for
-      updatePosts();
     }
+    //Check if jobId was created by user
+    if (!context?.createdPostings.includes(jobId)) {
+      navigate("/JobsManager");
+    }
+
+    if (context.profileType === "Recruiter") {
+      navigate("/UpdateProfile");
+    }
+
+    //Get all applicants for job
+    updatePosts();
   }, []);
 
   return (
-    <>
+    <div className="ViewApplications">
       <Header
-        headerText="Job Applications"
-        subheaderText="View All Jobs You Have Applied For"
+        headerText="View Job Applicants"
+        subheaderText="Invite applicants to interview!"
       />
-      <div className="ManageApplications">
+      <div>
         <Container className="ManageJobApps">
           <Row>
             <div className="Jobs-Header">
@@ -83,16 +95,19 @@ export default function Applications() {
             </div>
           </Row>
         </Container>
+
         <Container>
           {jobPosts.length > 0 ? (
             jobPosts
           ) : (
             <div className="no-found">
-              <Container className="no-found">No jobs applied</Container>
+              <Container className="no-found">
+                No Applicants to display
+              </Container>
             </div>
           )}
         </Container>
       </div>
-    </>
+    </div>
   );
 }
