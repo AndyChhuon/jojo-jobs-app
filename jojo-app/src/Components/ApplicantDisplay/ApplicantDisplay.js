@@ -85,7 +85,7 @@ export default function ApplicantDisplay(props) {
         <Col xs={3} md={3} sm={3} className="center-button">
           {jobNotification[jobId]?.applicant ? (
             <Button
-              className="button view-apps-btn"
+              className="button view-apps-btn selected-interview"
               variant="secondary"
               size="sm"
               onClick={onButtonClick}
