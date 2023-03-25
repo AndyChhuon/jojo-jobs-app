@@ -2,17 +2,17 @@ import "./JobPopup.less";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import Col from "react-bootstrap/Col";
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import Form from "react-bootstrap/Form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faTrashCan, faEdit } from "@fortawesome/free-solid-svg-icons";
-import JobEditPopup from "../JobEditPopup/JobEditPopup";
-import DeleteJobPopup from "../DeleteJobPopup/DeleteJobPopup";
-import { useContext } from "react";
-import { userLogin } from "../../App";
+
 import { useNavigate } from "react-router-dom";
 import Alert from "react-bootstrap/Alert";
 import Cookies from "universal-cookie";
+import DeleteJobPopup from "../DeleteJobPopup/DeleteJobPopup";
+import JobEditPopup from "../JobEditPopup/JobEditPopup";
+import { userLogin } from "../../ContextProvider/AppContextProvider";
 
 export default function JobPopup(props) {
   const [show, setShow] = useState(false);
@@ -20,7 +20,7 @@ export default function JobPopup(props) {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [showDelete, setShowDelete] = useState(false);
-  const [context, setContext] = useContext(userLogin);
+  const [context] = useContext(userLogin);
   const [coverLetterFile, setCoverLetterFile] = useState(null);
   const navigate = useNavigate();
 
@@ -33,8 +33,10 @@ export default function JobPopup(props) {
     setCoverLetterFile(event.target.files[0]);
   };
 
+  const { info } = props;
+
   const {
-    jobTitle = "test",
+    jobTitle,
     jobLocation,
     jobCompany,
     fullDescription,
@@ -42,13 +44,13 @@ export default function JobPopup(props) {
     benefits,
     icon = false,
     myApplications = false,
-  } = props.info;
+  } = info;
 
   const handleViewApps = () => {
-    navigate("/ViewApplications?jobId=" + jobId);
+    navigate(`/ViewApplications?jobId=${jobId}`);
   };
 
-  let { workType, workTime } = props.info;
+  let { workType, workTime } = info;
 
   switch (workTime) {
     case "FullTime":
@@ -57,11 +59,15 @@ export default function JobPopup(props) {
     case "PartTime":
       workTime = "Part Time";
       break;
+    default:
+      break;
   }
 
   switch (workType) {
     case "InPerson":
       workType = "In Person";
+      break;
+    default:
       break;
   }
 
@@ -71,21 +77,25 @@ export default function JobPopup(props) {
     setSuccess("");
     if (!context) {
       navigate("/login?initDisplayError=Please login to apply for this job.");
+      return;
     }
     if (!cookies.get("Jwt")) {
       navigate(
         "/login?initDisplayError=You have been disconnected. Please login again."
       );
+      return;
     }
     if (context?.profileType === "Recruiter") {
       navigate(
         "/UpdateProfile?initDisplayError=Recruiters cannot apply for jobs. Change profile type."
       );
+      return;
     }
     if (!context?.cv) {
       navigate(
         "/UpdateProfile?initDisplayError=Please setup Profile and CV to apply for this job."
       );
+      return;
     }
     if (!coverLetterFile) {
       setError("Please upload a cover letter.");
@@ -97,44 +107,44 @@ export default function JobPopup(props) {
     formData.append("formFile", coverLetterFile);
 
     // Send the form data to the server using fetch()
-    let resumeURL = await fetch(
-      "https://jobapplicationsapi.azurewebsites.net/api/AwsAPI/CoverLetter?studentId=" +
-        context.id +
-        "&jobPostId=" +
-        jobId,
+    fetch(
+      `https://jobapplicationsapi.azurewebsites.net/api/AwsAPI/CoverLetter?studentId=${context.id}&jobPostId=${jobId}`,
       {
         method: "POST",
         body: formData,
       }
     )
-      .then((response) => response.text())
-      .then((data) => {
-        return data;
-      });
-
-    // Update appliedTo array
-    fetch(
-      "https://jobapplicationsapi.azurewebsites.net/api/JobApplicantsAPI/updateJobs/" +
-        context.id +
-        "?JobId=" +
-        jobId,
-      {
-        method: "PUT",
-        headers: {
-          Authorization: "Bearer " + cookies.get("Jwt"),
-          accept: "text/plain",
-        },
-      }
-    )
       .then((response) => {
         if (response.ok) {
-          setSuccess("Job Application sent successfully.");
+          // Update appliedTo array
+          fetch(
+            `https://jobapplicationsapi.azurewebsites.net/api/JobApplicantsAPI/updateJobs/${context.id}?JobId=${jobId}`,
+            {
+              method: "PUT",
+              headers: {
+                Authorization: `Bearer ${cookies.get("Jwt")}`,
+                accept: "text/plain",
+              },
+            }
+          )
+            .then((responseApp) => {
+              if (responseApp.ok) {
+                setSuccess("Job Application sent successfully.");
+              } else {
+                setError("Error applying to job. Please try again.");
+              }
+            })
+            .catch(() => {
+              setError("Error applying to job. Please try again.");
+            });
         } else {
-          setError("Error applying to job. Please try again.");
+          // Cover letter upload failed
+          setError("Error uploading cover letter. Please try again.");
         }
       })
-      .catch((error) => {
-        setError("Error applying to job. Please try again.");
+      .catch(() => {
+        // Cover letter upload failed
+        setError("Error uploading cover letter. Please try again.");
       });
   }
 
@@ -220,10 +230,8 @@ export default function JobPopup(props) {
           </Button>
         )}
       </Col>
-      <JobEditPopup info={{ show: showEdit, setShowEdit, ...props.info }} />
-      <DeleteJobPopup
-        info={{ show: showDelete, setShowDelete, ...props.info }}
-      />
+      <JobEditPopup info={{ show: showEdit, setShowEdit, ...info }} />
+      <DeleteJobPopup info={{ show: showDelete, setShowDelete, ...info }} />
 
       <Modal show={show} onHide={handleClose} className="popup">
         <Modal.Header closeButton>
@@ -238,7 +246,7 @@ export default function JobPopup(props) {
             <p className="padding-5">{jobCompany}</p>
           </div>
           <span className="p1">
-            {jobLocation} • {workType}
+            {jobLocation} •{workType}
           </span>
           <span className="new-line p1">{workTime}</span>
           <Form.Group
@@ -264,6 +272,7 @@ export default function JobPopup(props) {
               target="_blank"
               className="cover-letter-link"
               href={`https://jobapplicants-bucket.s3.us-east-2.amazonaws.com/Cover_letter/${jobId}/${context.id}.pdf`}
+              rel="noreferrer"
             >
               Cover Letter - Current
             </a>
@@ -279,13 +288,11 @@ export default function JobPopup(props) {
 
           <h2 className="padding-5 padding-3-bottom">Benefits</h2>
           <div className="job-type-tags">
-            {benefits.map((benefit) => {
-              return (
-                <span key={benefit} className="job-type-tag">
-                  {benefit}
-                </span>
-              );
-            })}
+            {benefits.map((benefit) => (
+              <span key={benefit} className="job-type-tag">
+                {benefit}
+              </span>
+            ))}
           </div>
           <h3 className="padding-17">Full Job Description</h3>
           <span className="full-description p2">{fullDescription}</span>
@@ -313,7 +320,7 @@ export default function JobPopup(props) {
               Edit Application
             </Button>
           ) : icon ? (
-            <></>
+            ""
           ) : (
             <Button variant="primary" onClick={handleApply}>
               Apply Now

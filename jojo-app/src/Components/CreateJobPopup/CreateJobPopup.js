@@ -8,7 +8,9 @@ import { useNavigate } from "react-router-dom";
 import Cookies from "universal-cookie";
 
 export default function CreateJobPopup(props) {
-  let { show, setShowCreate, updatePosts } = props.info;
+  const {
+    info: { show, setShowCreate, updatePosts },
+  } = props;
   const navigate = useNavigate();
 
   const [jobTitleCreate, setJobTitleCreate] = useState("");
@@ -69,7 +71,7 @@ export default function CreateJobPopup(props) {
     setShowError(false);
 
     e.preventDefault();
-    let benefits = [];
+    const benefits = [];
     if (dentalCare) {
       benefits.push("Dental Care");
     }
@@ -90,7 +92,7 @@ export default function CreateJobPopup(props) {
       jobDescription: jobDescriptionCreate,
       workType: workTypeCreate,
       jobCategory: jobCategoryCreate,
-      benefits: benefits,
+      benefits,
       jobDate: jobDateCreate.split("-").join("/"),
       workTime: workTimeCreate,
     };
@@ -99,13 +101,14 @@ export default function CreateJobPopup(props) {
     const jwt = cookies.get("Jwt");
     if (!jwt) {
       navigate("/login");
+      return;
     }
 
     fetch("https://jobapplicationsapi.azurewebsites.net/api/JobPostsAPI", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: "Bearer " + jwt,
+        Authorization: `Bearer ${jwt}`,
       },
       body: JSON.stringify(jobInfo),
     }).then((response) => {

@@ -1,5 +1,5 @@
 import "./SearchJob.less";
-import { useState } from "react";
+import React, { useState } from "react";
 
 export default function SearchJob(props) {
   const [keywords, setKeywords] = useState("");
@@ -8,6 +8,8 @@ export default function SearchJob(props) {
   const [workTime, setWorkTime] = useState("");
   const [workType, setWorkType] = useState("");
   const [benefits, setBenefits] = useState([]);
+
+  const { onSearchParent } = props;
 
   const onSubmit = (e) => {
     e.preventDefault();
@@ -28,8 +30,8 @@ export default function SearchJob(props) {
       url += `workType=${workType}&`;
     }
 
-    let newSearch = { url: url, data: benefits };
-    props.onSearchChange(newSearch);
+    const newSearch = { url, data: benefits };
+    onSearchParent(newSearch);
   };
 
   const onSearchChange = (e) => {
@@ -65,7 +67,7 @@ export default function SearchJob(props) {
           className="searchBar"
           placeholder="Search.."
           onChange={onSearchChange}
-        ></input>
+        />
         <label htmlFor="locationSearch" className="label-search">
           Location
         </label>
@@ -74,7 +76,7 @@ export default function SearchJob(props) {
           className="searchBar"
           placeholder="Search.."
           onChange={onSearchChange}
-        ></input>
+        />
 
         <label htmlFor="categoriesSearch" className="label-search">
           Category
@@ -122,14 +124,14 @@ export default function SearchJob(props) {
           <option value="Hybrid">Hybrid</option>
         </select>
 
-        <label className="label-search">Benefits</label>
+        <div className="label-search">Benefits</div>
         <div className="checkboxContainer">
           <input
             type="checkbox"
             name="Dental Care"
             onChange={onCheckChange}
             id="dentalCare"
-          ></input>
+          />
           <label htmlFor="dentalCare">Dental Care</label>
         </div>
         <div className="checkboxContainer">
@@ -138,7 +140,7 @@ export default function SearchJob(props) {
             name="Insurance"
             onChange={onCheckChange}
             id="insurance"
-          ></input>
+          />
           <label htmlFor="insurance">Insurance</label>
         </div>
         <div className="checkboxContainer">
@@ -147,7 +149,7 @@ export default function SearchJob(props) {
             name="Paid Time Off"
             onChange={onCheckChange}
             id="paidTimeOff"
-          ></input>
+          />
           <label htmlFor="paidTimeOff">Paid Time Off</label>
         </div>
         <div className="checkboxContainer">
@@ -156,7 +158,7 @@ export default function SearchJob(props) {
             name="Pension"
             onChange={onCheckChange}
             id="pension"
-          ></input>
+          />
           <label htmlFor="pension">Pension</label>
         </div>
         <button className="submit-button" type="submit">

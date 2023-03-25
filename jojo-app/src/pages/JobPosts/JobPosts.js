@@ -1,20 +1,20 @@
-//Sudent form component
+// Sudent form component
 import React, { useState, useEffect } from "react";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import "./JobPosts.less";
-import JobPost from "../../Components/JobPost/JobPost";
 import Spinner from "react-bootstrap/Spinner";
+import JobPost from "../../Components/JobPost/JobPost";
 import Header from "../../Components/Header/Header";
 import SearchJob from "../../Components/SearchJob/SearchJob";
 
 export default function JobPosts() {
-  //Blur Search bar
+  // Blur Search bar
   const [search, setSearch] = useState({ data: [], url: "" });
 
-  const onSearchChange = (search) => {
-    setSearch(search);
+  const onSearchChange = (searchChange) => {
+    setSearch(searchChange);
   };
 
   const loading = (
@@ -25,7 +25,7 @@ export default function JobPosts() {
   );
 
   const [jobPosts, setJobPosts] = useState([loading]);
-  //Fetch api search state
+  // Fetch api search state
   useEffect(() => {
     setJobPosts([loading]);
     if (search.url === "") {
@@ -34,15 +34,14 @@ export default function JobPosts() {
       })
         .then((response) => response.json())
         .then((data) => {
-          let jobs = data.map((info) => {
-            return <JobPost key={info.jobId} info={info} />;
-          });
+          const jobs = data.map((info) => (
+            <JobPost key={info.jobId} info={info} />
+          ));
           setJobPosts(jobs);
         });
     } else {
       fetch(
-        "https://jobapplicationsapi.azurewebsites.net/api/JobPostsAPI/search" +
-          search.url,
+        `https://jobapplicationsapi.azurewebsites.net/api/JobPostsAPI/search${search.url}`,
         {
           method: "POST", // default, so we can ignore
           headers: {
@@ -53,9 +52,9 @@ export default function JobPosts() {
       )
         .then((response) => response.json())
         .then((data) => {
-          let jobs = data.map((info) => {
-            return <JobPost key={info.jobId} info={info} />;
-          });
+          const jobs = data.map((info) => (
+            <JobPost key={info.jobId} info={info} />
+          ));
           setJobPosts(jobs);
         });
     }
@@ -71,7 +70,7 @@ export default function JobPosts() {
       <div className="JobPostsContainer">
         <Row className="jobPostsRow">
           <Col md={4}>
-            <SearchJob onSearchChange={onSearchChange} />
+            <SearchJob onSearchParent={onSearchChange} />
           </Col>
           <Col md={8}>
             <div className="Jobs-Header">Showing 1-8 of 8 Results</div>

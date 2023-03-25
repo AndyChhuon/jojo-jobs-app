@@ -3,23 +3,23 @@ import React, { useEffect, useState } from "react";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
-import jojoLogo from "../../Images/jojo-black.png";
 import { GoogleLogin } from "react-google-login";
 import { LinkContainer } from "react-router-bootstrap";
 import { gapi } from "gapi-script";
 import Alert from "react-bootstrap/Alert";
-import { useNavigate } from "react-router-dom";
-import { useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+
+import jojoLogo from "../../Images/jojo-black.png";
 
 const clientId =
   "124118979451-5b03pb63uv3ogjgntaimga7tc4uirqcf.apps.googleusercontent.com";
 
 export default function Signup() {
-  //Initialise Google API
+  // Initialise Google API
   useEffect(() => {
     function start() {
       gapi.client.init({
-        clientId: clientId,
+        clientId,
         scope: "email",
       });
     }
@@ -27,18 +27,10 @@ export default function Signup() {
     gapi.load("client:auth2", start);
   }, []);
 
-  //If coming from login, display message
+  // If coming from login, display message
   const { search } = useLocation();
   const parameters = new URLSearchParams(search);
   const [connectedGoogle, setConnectedGoogle] = useState(false);
-
-  //Send to api when connected to google
-  useEffect(() => {
-    if (connectedGoogle) {
-      setConnectedGoogle(false);
-      sendToApi();
-    }
-  }, [connectedGoogle]);
 
   const navigate = useNavigate();
 
@@ -54,14 +46,14 @@ export default function Signup() {
     parameters.get("initDisplayError") ? parameters.get("initDisplayError") : ""
   );
 
-  //Send data to API
+  // Send data to API
   const sendToApi = () => {
     const loginInfo = {
-      email: email,
-      password: password,
-      firstName: firstName,
-      lastName: lastName,
-      profileImg: profileImg,
+      email,
+      password,
+      firstName,
+      lastName,
+      profileImg,
     };
 
     fetch("https://jobapplicationsapi.azurewebsites.net/api/JobApplicantsAPI", {
@@ -78,32 +70,28 @@ export default function Signup() {
         );
       } else if (response.status === 400) {
         response.text().then((text) => {
-          navigate("/login?initDisplayError=" + text);
+          navigate(`/login?initDisplayError=${text}`);
         });
       }
     });
   };
 
-  //Handle form submit
+  // Handle form submit
   const handleSubmit = (e) => {
     e.preventDefault();
     setError("");
     if (password !== confirmpassword) {
       setError("Passwords do not match.");
-      return;
     }
-    //Check password length above 8 characters and has at least one number
+    // Check password length above 8 characters and has at least one number
     else if (password.length < 8 || !/\d/.test(password)) {
       setError("Password must be at least 8 characters and contain a number.");
-      return;
     }
-    //Check email is valid
+    // Check email is valid
     else if (!/\S+@\S+\.\S+/.test(email)) {
       setError("Please enter a valid email address.");
-      return;
     } else if (!termsAndConditions) {
       setError("Please accept the terms and conditions.");
-      return;
     } else {
       sendToApi();
     }
@@ -122,25 +110,35 @@ export default function Signup() {
   const onSuccess = (response) => {
     setError("");
 
-    const email = response.profileObj.email;
-    const givenName = response.profileObj.givenName;
-    const familyName = response.profileObj.familyName;
-    const imageUrl = response.profileObj.imageUrl;
+    const emailGoogle = response.profileObj.email;
+    const { givenName } = response.profileObj;
+    const { familyName } = response.profileObj;
+    const { imageUrl } = response.profileObj;
 
-    if (!email) {
+    if (!emailGoogle) {
       setError("Something went wrong.");
       return;
-    } else if (!termsAndConditions) {
+    }
+    if (!termsAndConditions) {
       setError("Please accept the terms and conditions.");
       return;
     }
-    setEmail(email);
-    givenName ? setFirstName(givenName) : setFirstName("");
-    familyName ? setLastName(familyName) : setLastName("");
-    imageUrl ? setProfileImg(imageUrl) : setProfileImg("");
+    setEmail(emailGoogle);
+    if (givenName) setFirstName(givenName);
+    if (familyName) setLastName(familyName);
+    if (imageUrl) setProfileImg(imageUrl);
     setPassword("Google");
     setConnectedGoogle(true);
   };
+
+  // Send to api when connected to google
+  useEffect(() => {
+    if (connectedGoogle) {
+      setConnectedGoogle(false);
+      sendToApi();
+    }
+  }, [connectedGoogle]);
+
   return (
     <div className="signup">
       <Row className="login-row">
@@ -148,7 +146,7 @@ export default function Signup() {
           <Container className="login-modal-container">
             <LinkContainer to="/">
               <div className="center-jojo">
-                <img className="jojo-logo" src={jojoLogo}></img>
+                <img className="jojo-logo" src={jojoLogo} alt="jojo logo" />
                 <span className="jojo-text">Jobs For You.</span>
               </div>
             </LinkContainer>
@@ -168,13 +166,13 @@ export default function Signup() {
                   clientId={clientId}
                   buttonText="Sign Up With Google"
                   onSuccess={onSuccess}
-                  cookiePolicy={"single_host_origin"}
+                  cookiePolicy="single_host_origin"
                   className="google-login"
                 />
                 <div className="separator_container">
-                  <span className="separator sep1"></span>
+                  <span className="separator sep1" />
                   or
-                  <span className="separator sep2"></span>
+                  <span className="separator sep2" />
                 </div>
 
                 <input
@@ -183,7 +181,7 @@ export default function Signup() {
                   className="email-input"
                   onChange={onEmailChange}
                   required
-                ></input>
+                />
 
                 <input
                   type="password"
@@ -191,14 +189,14 @@ export default function Signup() {
                   className="email-input pass-input"
                   onChange={onPasswordChange}
                   required
-                ></input>
+                />
                 <input
                   type="password"
                   placeholder="Confirm Password"
                   className="email-input pass-input"
                   onChange={onConfirmPasswordChange}
                   required
-                ></input>
+                />
                 <div className="remember_forgot_container">
                   <span className="center-rem">
                     <input
@@ -208,11 +206,13 @@ export default function Signup() {
                       onChange={() =>
                         settermsAndConditions(!termsAndConditions)
                       }
-                    ></input>
+                    />
                     <label htmlFor="remember-checkbox">
                       Accept
                       <LinkContainer to="/">
-                        <a className="terms-cond">Terms and Conditions</a>
+                        <a className="terms-cond" href="/">
+                          Terms and Conditions
+                        </a>
                       </LinkContainer>
                     </label>
                   </span>
@@ -225,7 +225,7 @@ export default function Signup() {
                 <div className="no-account-container">
                   Already have an account?
                   <LinkContainer to="/login">
-                    <a>Login</a>
+                    <a href="/login">Login</a>
                   </LinkContainer>
                 </div>
               </div>
