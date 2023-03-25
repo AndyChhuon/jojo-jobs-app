@@ -38,5 +38,6 @@ Jojo seeks to fix this problem, thanks to an algorithm that matches various comp
 4. The software shall match job posts with applicants' CVs.
 
 ## Sprint Demos
+- sprint 3: https://www.youtube.com/watch?v=J-3p5YiSPI0&ab_channel=AndyChhuon
 - Sprint 2: https://www.youtube.com/watch?v=C5FcmbjEbHU&ab_channel=AndyChhuon
 
