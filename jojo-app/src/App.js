@@ -13,6 +13,8 @@ import { createContext, useState, useEffect } from "react";
 import Cookies from "universal-cookie";
 import jwt from "jwt-decode";
 
+import Notifications from "./pages/Notifications/Notifications";
+
 const userLogin = createContext();
 
 function App() {
@@ -72,6 +74,7 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/applications" element={<Applications />} />
         <Route path="/ViewApplications" element={<ViewApplications />} />
+        <Route path="/notifications" element={<Notifications />} />
       </Routes>
     </userLogin.Provider>
   );
