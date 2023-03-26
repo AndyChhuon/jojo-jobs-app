@@ -38,6 +38,19 @@ Jojo seeks to fix this problem, thanks to an algorithm that matches various comp
 4. The software shall match job posts with applicants' CVs.
 
 ## Sprint Demos
+
 - sprint 3: https://www.youtube.com/watch?v=J-3p5YiSPI0&ab_channel=AndyChhuon
 - Sprint 2: https://www.youtube.com/watch?v=C5FcmbjEbHU&ab_channel=AndyChhuon
 
+## Setup
+
+1. Clone this repo: `https://github.com/AndyChhuon/jojo-soen341project2023.git`
+2. CD into this repo and into jojo-app: `cd jojo-soen341project2023/jojo-app`
+3. Install dependencies: `npm install`
+4. Run the app: `npm start`
+
+## Before Committing
+
+1. Run ESLint: `npm run lint`
+2. Fix lint issues: `npm run fix`
+3. Run Jest tests: `npm run test`
