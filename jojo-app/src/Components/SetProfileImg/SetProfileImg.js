@@ -1,13 +1,8 @@
 import "./SetProfileImg.less";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit, faClose } from "@fortawesome/free-solid-svg-icons";
-import { useState, useRef } from "react";
-import ReactCrop, {
-  centerCrop,
-  makeAspectCrop,
-  Crop,
-  PixelCrop,
-} from "react-image-crop";
+import React, { useState, useRef } from "react";
+import ReactCrop from "react-image-crop";
 import "react-image-crop/dist/ReactCrop.css";
 import Popover from "react-bootstrap/Popover";
 
@@ -16,13 +11,13 @@ export default function SetProfileImg(props) {
 
   const TO_RADIANS = Math.PI / 180;
 
-  var scale = 1;
-  var rotate = 0;
+  const scale = 1;
+  const rotate = 0;
 
   const [crop, setCrop] = useState();
-  const [aspect, setAspect] = useState(1 / 1);
+  const [aspect] = useState(1 / 1);
 
-  //On select file, set image src inside cropper
+  // On select file, set image src inside cropper
   const [imgSrc, setImgSrc] = useState("");
 
   const [show, setShow] = useState(false);
@@ -30,25 +25,24 @@ export default function SetProfileImg(props) {
   const uploadFileRef = useRef(null);
   const imgRef = useRef(null);
 
-  //Crop image
-  const resizeImage = (image, crop, callback) => {
-    var canvas = document.createElement("canvas");
-    var ctx = canvas.getContext("2d");
-    var imageObj = new Image();
+  // Crop image
+  const resizeImage = (image, cropResize, callback) => {
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
 
     const scaleX = image.naturalWidth / image.width;
     const scaleY = image.naturalHeight / image.height;
 
     const pixelRatio = window.devicePixelRatio;
 
-    canvas.width = Math.floor(crop.width * scaleX * pixelRatio);
-    canvas.height = Math.floor(crop.height * scaleY * pixelRatio);
+    canvas.width = Math.floor(cropResize.width * scaleX * pixelRatio);
+    canvas.height = Math.floor(cropResize.height * scaleY * pixelRatio);
 
     ctx.scale(pixelRatio, pixelRatio);
     ctx.imageSmoothingQuality = "high";
 
-    const cropX = crop.x * scaleX;
-    const cropY = crop.y * scaleY;
+    const cropX = cropResize.x * scaleX;
+    const cropY = cropResize.y * scaleY;
 
     const rotateRads = rotate * TO_RADIANS;
     const centerX = image.naturalWidth / 2;
@@ -84,16 +78,16 @@ export default function SetProfileImg(props) {
     callback(canvas.toDataURL("image/png"));
   };
 
-  const onCompletedCrop = (crop) => {
-    if (crop.width && crop.height) {
-      resizeImage(imgRef.current, crop, (url) => {
+  const onCompletedCrop = (cropResize) => {
+    if (cropResize.width && cropResize.height) {
+      resizeImage(imgRef.current, cropResize, (url) => {
         setCroppedImg(url);
         setProfileHasChanged(true);
       });
     }
   };
 
-  //Handle image upload (show crop preview)
+  // Handle image upload (show crop preview)
   const onSelectFile = (e) => {
     if (e.target.files && e.target.files.length > 0) {
       setCrop(undefined); // Makes crop preview update between images.
@@ -115,7 +109,7 @@ export default function SetProfileImg(props) {
   return (
     <div className="setProfileImg">
       <div className="profileImgContainer">
-        <img className="image" src={croppedImg}></img>
+        <img className="image" src={croppedImg} alt="profile img" />
         <Popover
           id="popover-positioned-right"
           className="popover-positioned-right"
@@ -123,9 +117,13 @@ export default function SetProfileImg(props) {
         >
           <Popover.Header as="h3">
             <span>Crop Your Profile</span>
-            <span className="close-btn" onClick={() => setShow(false)}>
+            <button
+              className="close-btn"
+              onClick={() => setShow(false)}
+              type="button"
+            >
               <FontAwesomeIcon icon={faClose} />
-            </span>
+            </button>
           </Popover.Header>
           <Popover.Body>
             {imgSrc && (
@@ -143,16 +141,16 @@ export default function SetProfileImg(props) {
           </Popover.Body>
         </Popover>
 
-        <div className="overlay" onClick={handleIconClick}>
+        <button className="overlay" onClick={handleIconClick} type="button">
           <input
             type="file"
             className="file-upload"
             ref={uploadFileRef}
             accept="image/*"
             onChange={onSelectFile}
-          ></input>
+          />
           <FontAwesomeIcon icon={faEdit} className="iconEdit" />
-        </div>
+        </button>
       </div>
     </div>
   );

@@ -1,31 +1,28 @@
-//Sudent form component
-import React, { useState, useEffect } from "react";
+// Sudent form component
+import React, { useState, useEffect, useContext, useRef } from "react";
 import Container from "react-bootstrap/Container";
 import "./UpdateProfile.less";
-// import profile from "./../../Images/pfp.png";
-import Header from "../../Components/Header/Header";
-import { useContext, useRef } from "react";
-import { userLogin } from "../../App";
 import { useNavigate, useLocation } from "react-router-dom";
 import Alert from "react-bootstrap/Alert";
 import Cookies from "universal-cookie";
+import { userLogin } from "../../ContextProvider/AppContextProvider";
+import Header from "../../Components/Header/Header";
 import SetProfileImg from "../../Components/SetProfileImg/SetProfileImg";
 
 export default function UpdateProfile() {
   const [context, setContext] = useContext(userLogin);
   const navigate = useNavigate();
-
   const errorRef = useRef(null);
 
   const [student, setStudent] = useState(context);
 
-  //Detect if profile has changed
+  // Detect if profile has changed
   const [profileHasChanged, setProfileHasChanged] = useState(false);
 
-  //Data url of cropped image
+  // Data url of cropped image
   const [croppedImg, setCroppedImg] = useState(student?.profileImg);
 
-  //If coming from sign up, display message
+  // If coming from sign up, display message
   const { search } = useLocation();
   const parameters = new URLSearchParams(search);
 
@@ -57,6 +54,7 @@ export default function UpdateProfile() {
   const handleCityInputChange = (event) => {
     setStudent({ ...student, city: event.target.value });
   };
+
   const handleStateInputChange = (event) => {
     setStudent({ ...student, state: event.target.value });
   };
@@ -85,11 +83,11 @@ export default function UpdateProfile() {
   };
 
   function dataURLtoFile(dataurl, filename) {
-    var arr = dataurl.split(","),
-      mime = arr[0].match(/:(.*?);/)[1],
-      bstr = atob(arr[1]),
-      n = bstr.length,
-      u8arr = new Uint8Array(n);
+    const arr = dataurl.split(",");
+    const mime = arr[0].match(/:(.*?);/)[1];
+    const bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
 
     while (n--) {
       u8arr[n] = bstr.charCodeAt(n);
@@ -99,26 +97,24 @@ export default function UpdateProfile() {
   }
 
   async function sendToApi() {
-    let newStudent = student;
+    const newStudent = student;
 
     if (passwordChange !== "" && passwordConfirm !== "") {
       newStudent.password = passwordChange;
-      console.log(passwordChange);
     }
 
-    //If profile image was changed
+    // If profile image was changed
     if (profileHasChanged) {
-      //Convert data url to file (use math.random to avoid caching issue)
-      const file = dataURLtoFile(croppedImg, Math.random() + "profile.png");
+      // Convert data url to file (use math.random to avoid caching issue)
+      const file = dataURLtoFile(croppedImg, `${Math.random()}profile.png`);
 
       // Create image form data
       const formData = new FormData();
       formData.append("formFile", file);
 
       // Send the form data to the server using fetch()
-      let ImageUrl = await fetch(
-        "https://jobapplicationsapi.azurewebsites.net/api/AwsAPI/ProfileImages?studentId=" +
-          newStudent.id,
+      const ImageUrl = await fetch(
+        `https://jobapplicationsapi.azurewebsites.net/api/AwsAPI/ProfileImages?studentId=${newStudent.id}`,
         {
           method: "POST",
 
@@ -126,46 +122,39 @@ export default function UpdateProfile() {
         }
       )
         .then((response) => response.text())
-        .then((data) => {
-          return data;
-        });
+        .then((data) => data);
 
       newStudent.profileImg = ImageUrl;
-      console.log(ImageUrl);
     }
 
     const cookies = new Cookies();
-    //If resume was changed
+    // If resume was changed
     if (resumeFile) {
       // Create resume form data from file
       const formData = new FormData();
       formData.append("formFile", resumeFile);
 
       // Send the form data to the server using fetch()
-      let resumeURL = await fetch(
-        "https://jobapplicationsapi.azurewebsites.net/api/AwsAPI/CV?studentId=" +
-          newStudent.id,
+      const resumeURL = await fetch(
+        `https://jobapplicationsapi.azurewebsites.net/api/AwsAPI/CV?studentId=${newStudent.id}`,
         {
           method: "POST",
           body: formData,
         }
       )
         .then((response) => response.text())
-        .then((data) => {
-          return data;
-        });
+        .then((data) => data);
       newStudent.cv = resumeURL;
     }
 
-    //Update applicant profile with new info
+    // Update applicant profile with new info
     fetch(
-      "https://jobapplicationsapi.azurewebsites.net/api/JobApplicantsAPI/" +
-        newStudent.id,
+      `https://jobapplicationsapi.azurewebsites.net/api/JobApplicantsAPI/${newStudent.id}`,
       {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          Authorization: "Bearer " + cookies.get("Jwt"),
+          Authorization: `Bearer ${cookies.get("Jwt")}`,
         },
         body: JSON.stringify(newStudent),
       }
@@ -179,7 +168,7 @@ export default function UpdateProfile() {
           setError("Error updating profile. Please try again.");
         }
       })
-      .catch((error) => {
+      .catch(() => {
         setError("Error updating profile. Please try again.");
       });
   }
@@ -188,14 +177,14 @@ export default function UpdateProfile() {
     event.preventDefault();
     setSuccess("");
     setError("");
-    //Check password change
+    // Check password change
     if (passwordChange !== "") {
       if (passwordChange !== passwordConfirm) {
         setError("Passwords do not match.");
         return;
       }
-      //Check password length above 8 characters and has at least one number
-      else if (passwordChange.length < 8 || !/\d/.test(passwordChange)) {
+      // Check password length above 8 characters and has at least one number
+      if (passwordChange.length < 8 || !/\d/.test(passwordChange)) {
         setError(
           "Password must be at least 8 characters and contain a number."
         );
@@ -205,9 +194,8 @@ export default function UpdateProfile() {
 
     sendToApi();
   };
-  //input fields for student form
 
-  //useeffect to check if user is logged in
+  // useeffect to check if user is logged in
   useEffect(() => {
     if (!context) {
       navigate("/login");
@@ -240,7 +228,7 @@ export default function UpdateProfile() {
                     croppedImg={croppedImg}
                     setCroppedImg={setCroppedImg}
                     setProfileHasChanged={setProfileHasChanged}
-                  ></SetProfileImg>
+                  />
                 </div>
 
                 <div className="col-sm">
@@ -343,7 +331,7 @@ export default function UpdateProfile() {
                   </span>
                 </div>
               </div>
-              <hr></hr>
+              <hr />
               <div>
                 <label htmlFor="profileType">Profile Type: </label>
                 <select
@@ -370,7 +358,7 @@ export default function UpdateProfile() {
                     name="resume"
                     accept="application/pdf"
                     className="form-control upload-resume"
-                    required={student?.cv ? false : true}
+                    required={!student?.cv}
                     onChange={handleResumeInputChange}
                   />
                   <span className="curr-resume">
@@ -379,12 +367,13 @@ export default function UpdateProfile() {
                         className="margin-left-5"
                         target="_blank"
                         href={student.cv}
+                        rel="noreferrer"
                       >
-                        {decodeURIComponent(
+                        {`${decodeURIComponent(
                           student.cv
                             .substring(student.cv.lastIndexOf("/") + 1)
                             .replace(/\+/g, " ")
-                        ) + " - Current Resume"}
+                        )} - Current Resume`}
                       </a>
                     ) : (
                       <span className="margin-left-5">No resume uploaded</span>

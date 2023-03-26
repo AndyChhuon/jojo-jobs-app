@@ -1,17 +1,17 @@
 import "./ViewApplications.less";
-import Header from "../../Components/Header/Header";
-import { userLogin } from "../../App";
 import { useNavigate, useLocation } from "react-router-dom";
-import { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Spinner from "react-bootstrap/Spinner";
+import { userLogin } from "../../ContextProvider/AppContextProvider";
+import Header from "../../Components/Header/Header";
 import ApplicantDisplay from "../../Components/ApplicantDisplay/ApplicantDisplay";
 
 export default function ViewApplications() {
   const [context, setContext] = useContext(userLogin);
 
-  //Get job id from url
+  // Get job id from url
   const { search } = useLocation();
   const parameters = new URLSearchParams(search);
   const jobId = parameters.get("jobId");
@@ -29,17 +29,14 @@ export default function ViewApplications() {
 
   const updatePosts = () => {
     fetch(
-      "https://jobapplicationsapi.azurewebsites.net/api/JobPostsAPI/GetApplicants/" +
-        jobId,
+      `https://jobapplicationsapi.azurewebsites.net/api/JobPostsAPI/GetApplicants/${jobId}`,
       {
         method: "GET", // default, so we can ignore
       }
     )
       .then((response) => response.json())
       .then((data) => {
-        const jobId = parameters.get("jobId");
-
-        let jobs = data.map((applicant) => (
+        const jobs = data.map((applicant) => (
           <ApplicantDisplay
             key={applicant.id}
             info={{ ...applicant, updatePosts, jobId }}
@@ -49,8 +46,7 @@ export default function ViewApplications() {
       });
 
     fetch(
-      "https://jobapplicationsapi.azurewebsites.net/api/JobApplicantsAPI/" +
-        context.id,
+      `https://jobapplicationsapi.azurewebsites.net/api/JobApplicantsAPI/${context.id}`,
       {
         method: "GET",
       }
@@ -66,17 +62,20 @@ export default function ViewApplications() {
   useEffect(() => {
     if (!context) {
       navigate("/login");
+      return;
     }
-    //Check if jobId was created by user
+    // Check if jobId was created by user
     if (!context?.createdPostings.includes(jobId)) {
       navigate("/JobsManager");
+      return;
     }
 
     if (context.profileType === "Recruiter") {
       navigate("/UpdateProfile");
+      return;
     }
 
-    //Get all applicants for job
+    // Get all applicants for job
     updatePosts();
   }, []);
 
@@ -90,7 +89,9 @@ export default function ViewApplications() {
         <Container className="ManageJobApps">
           <Row>
             <div className="Jobs-Header">
-              Showing {jobPosts.length == 0 ? "0" : "1"}-{jobPosts.length} of{" "}
+              Showing&nbsp;
+              {jobPosts.length === 0 ? "0" : "1"}-{jobPosts.length}
+              &nbsp;of&nbsp;
               {jobPosts.length} Results
             </div>
           </Row>

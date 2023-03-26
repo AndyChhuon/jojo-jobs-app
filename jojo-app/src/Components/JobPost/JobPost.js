@@ -2,9 +2,11 @@ import "./JobPost.less";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import React from "react";
 import JobPopup from "../JobPopup/JobPopup";
 
 export default function JobPosts(props) {
+  const { info } = props;
   const {
     jobTitle,
     jobDescription,
@@ -12,7 +14,7 @@ export default function JobPosts(props) {
     jobLocation,
     jobCompany,
     jobDate,
-  } = props.info;
+  } = info;
 
   return (
     <Container className="JobPost">
@@ -29,24 +31,36 @@ export default function JobPosts(props) {
             </Row>
             <Row>
               <Col>
-                <h6 className="job-about">Category: {jobCategory} </h6>
+                <h6 className="job-about">
+                  Category:&nbsp;
+                  {jobCategory}
+                </h6>
               </Col>
               <Col>
-                <h6 className="job-about">Location: {jobLocation}</h6>
+                <h6 className="job-about">
+                  Location:&nbsp;
+                  {jobLocation}
+                </h6>
               </Col>
             </Row>
             <Row>
               <Col>
-                <h6 className="job-about">Company: {jobCompany}</h6>
+                <h6 className="job-about">
+                  Company:&nbsp;
+                  {jobCompany}
+                </h6>
               </Col>
               <Col>
-                <h6 className="job-about">Date: {jobDate}</h6>
+                <h6 className="job-about">
+                  Date:&nbsp;
+                  {jobDate}
+                </h6>
               </Col>
             </Row>
           </Container>
         </Col>
 
-        <JobPopup info={props.info} />
+        <JobPopup info={info} />
       </Row>
     </Container>
   );

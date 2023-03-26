@@ -5,42 +5,42 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
 import Cookies from "universal-cookie";
-import { userLogin } from "../../App";
 import { useNavigate } from "react-router-dom";
+import { userLogin } from "../../ContextProvider/AppContextProvider";
 
 export default function ApplicantDisplay(props) {
-  const [context, setContext] = useContext(userLogin);
+  const [context] = useContext(userLogin);
   const navigate = useNavigate();
 
   const {
-    firstName,
-    lastName,
-    jobPosition,
-    about,
-    city,
-    email,
-    education,
-    jobId,
-    updatePosts,
-    jobNotification,
-  } = props.info;
+    info: {
+      firstName,
+      lastName,
+      jobPosition,
+      about,
+      city,
+      email,
+      education,
+      jobId,
+      updatePosts,
+      jobNotification,
+    },
+  } = props;
 
   const onButtonClick = () => {
     const cookies = new Cookies();
     const jwt = cookies.get("Jwt");
     if (!jwt) {
       navigate("/login");
+      return;
     }
     fetch(
-      "https://jobapplicationsapi.azurewebsites.net/api/JobApplicantsAPI/inviteInterview/" +
-        context.id +
-        "?JobId=" +
-        jobId,
+      `https://jobapplicationsapi.azurewebsites.net/api/JobApplicantsAPI/inviteInterview/${context.id}?JobId=${jobId}`,
       {
         method: "PUT",
         headers: {
           "Content-Type": "text/plain",
-          Authorization: "Bearer " + jwt,
+          Authorization: `Bearer ${jwt}`,
         },
       }
     ).then((response) => {
@@ -57,7 +57,7 @@ export default function ApplicantDisplay(props) {
           <Container>
             <Row className="top-row">
               <Col>
-                <h6 className="job-title">{firstName + " " + lastName}</h6>
+                <h6 className="job-title">{`${firstName} ${lastName}`}</h6>
               </Col>
               <Col>
                 <h6 className="job-description">{jobPosition}</h6>
@@ -65,18 +65,30 @@ export default function ApplicantDisplay(props) {
             </Row>
             <Row>
               <Col>
-                <h6 className="job-about">About: {about}</h6>
+                <h6 className="job-about">
+                  About:&nbsp;
+                  {about}
+                </h6>
               </Col>
               <Col>
-                <h6 className="job-about">Located: {city}</h6>
+                <h6 className="job-about">
+                  Located:&nbsp;
+                  {city}
+                </h6>
               </Col>
             </Row>
             <Row>
               <Col>
-                <h6 className="job-about">Email: {email}</h6>
+                <h6 className="job-about">
+                  Email:&nbsp;
+                  {email}
+                </h6>
               </Col>
               <Col>
-                <h6 className="job-about">Education: {education}</h6>
+                <h6 className="job-about">
+                  Education:&nbsp;
+                  {education}
+                </h6>
               </Col>
             </Row>
           </Container>
@@ -85,7 +97,7 @@ export default function ApplicantDisplay(props) {
         <Col xs={3} md={3} sm={3} className="center-button">
           {jobNotification[jobId]?.applicant ? (
             <Button
-              className="button view-apps-btn"
+              className="button view-apps-btn selected-interview"
               variant="secondary"
               size="sm"
               onClick={onButtonClick}

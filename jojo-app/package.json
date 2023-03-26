@@ -13,20 +13,25 @@
     "craco-less": "^2.0.0",
     "force": "^0.0.3",
     "gapi-script": "^1.2.0",
+    "jwt-decode": "^3.1.2",
     "react": "^18.2.0",
     "react-bootstrap": "^2.7.2",
     "react-dom": "^18.2.0",
     "react-google-login": "^5.2.2",
+    "react-image-crop": "^10.0.9",
     "react-router-bootstrap": "^0.26.2",
     "react-router-dom": "^6.8.1",
     "react-scripts": "5.0.1",
+    "universal-cookie": "^4.0.4",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
     "start": "craco start",
     "build": "craco build",
     "test": "craco test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "lint": "eslint src",
+    "fix": "eslint src --fix"
   },
   "eslintConfig": {
     "extends": [
@@ -49,6 +54,12 @@
   "devDependencies": {
     "@craco/craco": "^7.0.0",
     "css-loader": "^6.7.3",
+    "eslint": "^8.36.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-jsx-a11y": "^6.7.1",
+    "eslint-plugin-react": "^7.32.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
     "less": "^4.1.3",
     "less-loader": "^11.1.0",
     "style-loader": "^3.3.1"

@@ -1,15 +1,15 @@
 import "./Navbar.less";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faUserPlus } from "@fortawesome/free-solid-svg-icons";
-import jojoLogo from "./../../Images/jojo-black.png";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
 import { LinkContainer } from "react-router-bootstrap";
-import { useContext, useEffect, useState } from "react";
-import { userLogin } from "../../App";
+import React, { useContext, useEffect, useState } from "react";
 import Cookies from "universal-cookie";
+import { userLogin } from "../../ContextProvider/AppContextProvider";
+import jojoLogo from "../../Images/jojo-black.png";
 
 export default function JojoNavbar() {
   const [context, setContext] = useContext(userLogin);
@@ -75,7 +75,7 @@ export default function JojoNavbar() {
             style={context ? { display: "none" } : {}}
           >
             <Nav.Link className="">
-              <button className="button-login">
+              <button className="button-login" type="button">
                 <FontAwesomeIcon className="pad-right-5" icon={faUserPlus} />
                 Login
               </button>
@@ -152,7 +152,7 @@ export default function JojoNavbar() {
             style={context ? { display: "none" } : {}}
           >
             <Nav.Link>
-              <button className="button-login">
+              <button className="button-login" type="button">
                 <FontAwesomeIcon className="pad-right-5" icon={faUserPlus} />
                 Login
               </button>

@@ -3,27 +3,28 @@ import React, { useEffect, useState, useContext } from "react";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
-import jojoLogo from "../../Images/jojo-black.png";
 import { GoogleLogin } from "react-google-login";
 import { LinkContainer } from "react-router-bootstrap";
 import { gapi } from "gapi-script";
 import { useLocation, useNavigate } from "react-router-dom";
 import Alert from "react-bootstrap/Alert";
-import { userLogin } from "../../App";
 import jwt from "jwt-decode";
 import Cookies from "universal-cookie";
+import { userLogin } from "../../ContextProvider/AppContextProvider";
+import jojoLogo from "../../Images/jojo-black.png";
 
 const clientId =
   "124118979451-5b03pb63uv3ogjgntaimga7tc4uirqcf.apps.googleusercontent.com";
 
 export default function Login() {
   const [context, setContext] = useContext(userLogin);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    //Initialise Google API
+    // Initialise Google API
     function start() {
       gapi.client.init({
-        clientId: clientId,
+        clientId,
         scope: "email",
       });
     }
@@ -31,7 +32,7 @@ export default function Login() {
     gapi.load("client:auth2", start);
   }, []);
 
-  //If user is logged in, redirect to update profile
+  // If user is logged in, redirect to update profile
   useEffect(() => {
     if (context) {
       navigate("/UpdateProfile");
@@ -40,15 +41,7 @@ export default function Login() {
 
   const [connectedGoogle, setConnectedGoogle] = useState(false);
 
-  //Send to api when connected to google
-  useEffect(() => {
-    if (connectedGoogle) {
-      setConnectedGoogle(false);
-      sendToApi();
-    }
-  }, [connectedGoogle]);
-
-  //If coming from sign up, display message
+  // If coming from sign up, display message
   const { search } = useLocation();
   const parameters = new URLSearchParams(search);
 
@@ -61,31 +54,28 @@ export default function Login() {
       : ""
   );
 
-  const navigate = useNavigate();
-
-  //Login data
+  // Login data
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  //Send data to API
+  // Send data to API
   const sendToApi = () => {
-    const url = "?email=" + email + "&password=" + password;
+    const url = `?email=${email}&password=${password}`;
 
     fetch(
-      "https://jobapplicationsapi.azurewebsites.net/api/JobApplicantsAPI/login" +
-        url,
+      `https://jobapplicationsapi.azurewebsites.net/api/JobApplicantsAPI/login${url}`,
       {
         method: "GET",
         headers: {
           "Content-Type": "text/plain",
         },
       }
-    ).then((response) => {
-      if (response.ok) {
-        response.text().then((text) => {
+    ).then((responseJwt) => {
+      if (responseJwt.ok) {
+        responseJwt.text().then((text) => {
           const decodedJwt = jwt(text);
           const cookieExp = new Date(parseInt(decodedJwt.exp) * 1000);
-          //Store jwt as cookie
+          // Store jwt as cookie
           const cookies = new Cookies();
           cookies.set("Jwt", text, {
             path: "/",
@@ -97,16 +87,15 @@ export default function Login() {
             decodedJwt[
               "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"
             ];
-          //Fetch user info from api
+          // Fetch user info from api
           fetch(
-            "https://jobapplicationsapi.azurewebsites.net/api/JobApplicantsAPI/" +
-              applicantId,
+            `https://jobapplicationsapi.azurewebsites.net/api/JobApplicantsAPI/${applicantId}`,
             {
               method: "GET",
             }
-          ).then((response) => {
-            if (response.ok) {
-              response.json().then((json) => {
+          ).then((responseApplicant) => {
+            if (responseApplicant.ok) {
+              responseApplicant.json().then((json) => {
                 setContext(json);
               });
             }
@@ -114,11 +103,11 @@ export default function Login() {
           setError(false);
           // navigate("/UpdateProfile");
         });
-      } else if (response.status === 400) {
-        response.text().then((text) => {
+      } else if (responseJwt.status === 400) {
+        responseJwt.text().then((text) => {
           setError(text);
         });
-      } else if (response.status === 404) {
+      } else if (responseJwt.status === 404) {
         navigate(
           "/signup?initDisplayError=Email address not found. Please sign up."
         );
@@ -126,20 +115,26 @@ export default function Login() {
     });
   };
 
-  //Handle form submit
+  // Send to api when connected to google
+  useEffect(() => {
+    if (connectedGoogle) {
+      setConnectedGoogle(false);
+      sendToApi();
+    }
+  }, [connectedGoogle]);
+
+  // Handle form submit
   const handleSubmit = (e) => {
     e.preventDefault();
     setError("");
     setSuccess("");
 
-    //Check password length above 8 characters and has at least one number
+    // Check password length above 8 characters and has at least one number
     if (password.length < 8 || !/\d/.test(password)) {
       setError("Password must be at least 8 characters and contain a number.");
-      return;
-    } //Check email is valid
+    } // Check email is valid
     else if (!/\S+@\S+\.\S+/.test(email)) {
       setError("Please enter a valid email address.");
-      return;
     } else {
       sendToApi();
     }
@@ -156,14 +151,14 @@ export default function Login() {
     setError("");
     setSuccess("");
 
-    const email = response.profileObj.email;
+    const emailGoogle = response.profileObj.email;
 
-    if (!email) {
+    if (!emailGoogle) {
       setError("Something went wrong.");
       return;
     }
 
-    setEmail(email);
+    setEmail(emailGoogle);
     setPassword("Google");
     setConnectedGoogle(true);
   };
@@ -181,7 +176,7 @@ export default function Login() {
           <Container className="login-modal-container">
             <LinkContainer to="/">
               <div className="center-jojo">
-                <img className="jojo-logo" src={jojoLogo}></img>
+                <img className="jojo-logo" src={jojoLogo} alt="jojo logo" />
                 <span className="jojo-text">Jobs For You.</span>
               </div>
             </LinkContainer>
@@ -208,13 +203,13 @@ export default function Login() {
                   clientId={clientId}
                   buttonText="Login With Google"
                   onSuccess={onSuccess}
-                  cookiePolicy={"single_host_origin"}
+                  cookiePolicy="single_host_origin"
                   className="google-login"
                 />
                 <div className="separator_container">
-                  <span className="separator sep1"></span>
+                  <span className="separator sep1" />
                   or
-                  <span className="separator sep2"></span>
+                  <span className="separator sep2" />
                 </div>
 
                 <input
@@ -223,7 +218,7 @@ export default function Login() {
                   className="email-input"
                   required
                   onChange={onEmailChange}
-                ></input>
+                />
 
                 <input
                   type="password"
@@ -231,21 +226,21 @@ export default function Login() {
                   className="email-input pass-input"
                   onChange={onPasswordChange}
                   required
-                ></input>
+                />
                 <div className="remember_forgot_container">
                   <span className="center-rem">
                     <input
                       className="remember-checkbox"
                       type="checkbox"
                       id="remember-checkbox"
-                    ></input>
+                    />
                     <label htmlFor="remember-checkbox">
                       Remember for 30 days
                     </label>
                   </span>
-                  <LinkContainer to="/">
+                  {/* <LinkContainer to="/">
                     <a className="forgot-pass">Forgot Password</a>
-                  </LinkContainer>
+                  </LinkContainer> */}
                 </div>
 
                 <button type="submit" className="login-btn">
@@ -255,7 +250,7 @@ export default function Login() {
                 <div className="no-account-container">
                   Don't have an account?
                   <LinkContainer to="/signup">
-                    <a>Sign up for free</a>
+                    <a href="/signup">Sign up for free</a>
                   </LinkContainer>
                 </div>
               </div>

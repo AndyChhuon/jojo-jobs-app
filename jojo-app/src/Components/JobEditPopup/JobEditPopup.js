@@ -10,22 +10,24 @@ import Cookies from "universal-cookie";
 export default function JobEditPopup(props) {
   const navigate = useNavigate();
 
-  let {
-    jobId,
-    jobTitle,
-    jobLocation,
-    jobCompany,
-    fullDescription,
-    jobDescription,
-    workType,
-    jobCategory,
-    benefits,
-    jobDate,
-    workTime,
-    show,
-    setShowEdit,
-    updatePosts,
-  } = props.info;
+  const {
+    info: {
+      jobId,
+      jobTitle,
+      jobLocation,
+      jobCompany,
+      fullDescription,
+      jobDescription,
+      workType,
+      jobCategory,
+      benefits,
+      jobDate,
+      workTime,
+      show,
+      setShowEdit,
+      updatePosts,
+    },
+  } = props;
 
   const [jobTitleEdit, setJobTitleEdit] = useState(jobTitle);
   const [jobLocationEdit, setJobLocationEdit] = useState(jobLocation);
@@ -71,10 +73,10 @@ export default function JobEditPopup(props) {
     setJobDescriptionEdit(e.target.value);
   };
 
-  let DentalCare = benefits.includes("Dental Care");
-  let Insurance = benefits.includes("Insurance");
-  let TimeOff = benefits.includes("Paid Time Off");
-  let Pension = benefits.includes("Pension");
+  const DentalCare = benefits.includes("Dental Care");
+  const Insurance = benefits.includes("Insurance");
+  const TimeOff = benefits.includes("Paid Time Off");
+  const Pension = benefits.includes("Pension");
 
   const [dentalCare, setDentalCare] = useState(DentalCare);
   const [insurance, setInsurance] = useState(Insurance);
@@ -91,18 +93,18 @@ export default function JobEditPopup(props) {
     setShowError(false);
 
     e.preventDefault();
-    let benefits = [];
+    const newBenefits = [];
     if (dentalCare) {
-      benefits.push("Dental Care");
+      newBenefits.push("Dental Care");
     }
     if (insurance) {
-      benefits.push("Insurance");
+      newBenefits.push("Insurance");
     }
     if (timeOff) {
-      benefits.push("Paid Time Off");
+      newBenefits.push("Paid Time Off");
     }
     if (pension) {
-      benefits.push("Pension");
+      newBenefits.push("Pension");
     }
     const jobInfo = {
       jobTitle: jobTitleEdit,
@@ -112,7 +114,7 @@ export default function JobEditPopup(props) {
       jobDescription: jobDescriptionEdit,
       workType: workTypeEdit,
       jobCategory: jobCategoryEdit,
-      benefits: benefits,
+      benefits: newBenefits,
       jobDate: jobDateEdit.split("-").join("/"),
       workTime: workTimeEdit,
     };
@@ -121,15 +123,16 @@ export default function JobEditPopup(props) {
     const jwt = cookies.get("Jwt");
     if (!jwt) {
       navigate("/login");
+      return;
     }
 
     fetch(
-      "https://jobapplicationsapi.azurewebsites.net/api/JobPostsAPI/" + jobId,
+      `https://jobapplicationsapi.azurewebsites.net/api/JobPostsAPI/${jobId}`,
       {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          Authorization: "Bearer " + jwt,
+          Authorization: `Bearer ${jwt}`,
         },
         body: JSON.stringify(jobInfo),
       }

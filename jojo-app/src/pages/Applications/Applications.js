@@ -1,11 +1,11 @@
 import "./Applications.less";
-import Header from "../../Components/Header/Header";
-import { useContext, useEffect, useState } from "react";
-import { userLogin } from "../../App";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Spinner from "react-bootstrap/Spinner";
+import { userLogin } from "../../ContextProvider/AppContextProvider";
+import Header from "../../Components/Header/Header";
 import JobPost from "../../Components/JobPost/JobPost";
 
 export default function Applications() {
@@ -22,26 +22,29 @@ export default function Applications() {
 
   const updatePosts = () => {
     fetch(
-      "https://jobapplicationsapi.azurewebsites.net/api/JobApplicantsAPI/AppliedJobs/" +
-        context.id,
+      `https://jobapplicationsapi.azurewebsites.net/api/JobApplicantsAPI/AppliedJobs/${context.id}`,
       {
         method: "GET", // default, so we can ignore
       }
     )
       .then((response) => response.json())
       .then((data) => {
-        let jobs = data.map((info) => (
+        const jobs = data.map((info) => (
           <JobPost
             key={info.jobId}
-            info={{ icon: true, ...info, myApplications: true, updatePosts }}
+            info={{
+              icon: true,
+              ...info,
+              myApplications: true,
+              updatePosts,
+            }}
           />
         ));
         setJobPosts(jobs);
       });
 
     fetch(
-      "https://jobapplicationsapi.azurewebsites.net/api/JobApplicantsAPI/" +
-        context.id,
+      `https://jobapplicationsapi.azurewebsites.net/api/JobApplicantsAPI/${context.id}`,
       {
         method: "GET",
       }
@@ -54,16 +57,17 @@ export default function Applications() {
     });
   };
 
-  //useeffect to check if user is logged in
+  // useeffect to check if user is logged in
   useEffect(() => {
     if (!context) {
       navigate("/login");
     } else {
       if (context.profileType === "Recruiter") {
         navigate("/UpdateProfile");
+        return;
       }
 
-      //Get all jobs applied for
+      // Get all jobs applied for
       updatePosts();
     }
   }, []);
@@ -78,7 +82,7 @@ export default function Applications() {
         <Container className="ManageJobApps">
           <Row>
             <div className="Jobs-Header">
-              Showing {jobPosts.length == 0 ? "0" : "1"}-{jobPosts.length} of{" "}
+              Showing {jobPosts.length === 0 ? "0" : "1"}-{jobPosts.length} of{" "}
               {jobPosts.length} Results
             </div>
           </Row>

@@ -1,30 +1,38 @@
-//Sudent form component
+// Sudent form component
 import React, { useState, useEffect, useContext } from "react";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import "./ManagePosts.less";
-import JobPost from "../../Components/JobPost/JobPost";
 import Spinner from "react-bootstrap/Spinner";
+import { useNavigate } from "react-router-dom";
+import JobPost from "../../Components/JobPost/JobPost";
 import CreateJobPopup from "../../Components/CreateJobPopup/CreateJobPopup";
 import Header from "../../Components/Header/Header";
-import { userLogin } from "../../App";
-import { useNavigate } from "react-router-dom";
+import { userLogin } from "../../ContextProvider/AppContextProvider";
 
 export default function JobPosts() {
   const [context, setContext] = useContext(userLogin);
   const navigate = useNavigate();
 
+  const loading = (
+    <div className="jobs-loading-container" key="loading">
+      <span className="search-text">Searching...</span>
+      <Spinner animation="border" size="sm" />
+    </div>
+  );
+
+  const [jobPosts, setJobPosts] = useState([loading]);
+
   const updatePosts = () => {
     fetch(
-      "https://jobapplicationsapi.azurewebsites.net/api/JobApplicantsAPI/CreatedJobs/" +
-        context.id,
+      `https://jobapplicationsapi.azurewebsites.net/api/JobApplicantsAPI/CreatedJobs/${context.id}`,
       {
         method: "GET", // default, so we can ignore
       }
     )
       .then((response) => response.json())
       .then((data) => {
-        let jobs = data.map((info) => (
+        const jobs = data.map((info) => (
           <JobPost
             key={info.jobId}
             info={{ updatePosts, icon: true, ...info }}
@@ -34,8 +42,7 @@ export default function JobPosts() {
       });
 
     fetch(
-      "https://jobapplicationsapi.azurewebsites.net/api/JobApplicantsAPI/" +
-        context.id,
+      `https://jobapplicationsapi.azurewebsites.net/api/JobApplicantsAPI/${context.id}`,
       {
         method: "GET",
       }
@@ -51,33 +58,24 @@ export default function JobPosts() {
   const [showCreate, setShowCreate] = useState(false);
   const handleShowCreate = () => setShowCreate(true);
 
-  const loading = (
-    <div className="jobs-loading-container" key="loading">
-      <span className="search-text">Searching...</span>
-      <Spinner animation="border" size="sm" />
-    </div>
-  );
-
-  const [jobPosts, setJobPosts] = useState([loading]);
-
-  //useeffect to check if user is logged in
+  // useeffect to check if user is logged in
   useEffect(() => {
     if (!context) {
       navigate("/login");
     } else {
       if (context.profileType === "Applicant") {
         navigate("/UpdateProfile");
+        return;
       }
       fetch(
-        "https://jobapplicationsapi.azurewebsites.net/api/JobApplicantsAPI/CreatedJobs/" +
-          context.id,
+        `https://jobapplicationsapi.azurewebsites.net/api/JobApplicantsAPI/CreatedJobs/${context.id}`,
         {
           method: "GET", // default, so we can ignore
         }
       )
         .then((response) => response.json())
         .then((data) => {
-          let jobs = data.map((info) => (
+          const jobs = data.map((info) => (
             <JobPost
               key={info.jobId}
               info={{ updatePosts, icon: true, ...info }}
@@ -98,7 +96,7 @@ export default function JobPosts() {
         <Container className="ManageJobPosts">
           <Row>
             <div className="Jobs-Header">
-              Showing {jobPosts.length == 0 ? "0" : "1"}-{jobPosts.length} of{" "}
+              Showing {jobPosts.length === 0 ? "0" : "1"}-{jobPosts.length} of{" "}
               {jobPosts.length} Results
             </div>
           </Row>

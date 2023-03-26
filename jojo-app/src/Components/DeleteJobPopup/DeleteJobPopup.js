@@ -5,16 +5,18 @@ import Form from "react-bootstrap/Form";
 import "./DeleteJobPopup.less";
 import Alert from "react-bootstrap/Alert";
 import Cookies from "universal-cookie";
-import { userLogin } from "../../App";
 import { useNavigate } from "react-router-dom";
+import { userLogin } from "../../ContextProvider/AppContextProvider";
 
 export default function DeleteJobPopup(props) {
-  let { show, setShowDelete, updatePosts, jobId, myApplications } = props.info;
+  const {
+    info: { show, setShowDelete, updatePosts, jobId, myApplications },
+  } = props;
   const navigate = useNavigate();
 
   const [showError, setShowError] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
-  const [context, setContext] = useContext(userLogin);
+  const [context] = useContext(userLogin);
 
   const handleClose = () => {
     setShowDelete(false);
@@ -30,18 +32,16 @@ export default function DeleteJobPopup(props) {
     const jwt = cookies.get("Jwt");
     if (!jwt) {
       navigate("/login");
+      return;
     }
     if (myApplications) {
       fetch(
-        "https://jobapplicationsapi.azurewebsites.net/api/JobApplicantsAPI/removeJobs/" +
-          context.id +
-          "?JobId=" +
-          jobId,
+        `https://jobapplicationsapi.azurewebsites.net/api/JobApplicantsAPI/removeJobs/${context.id}?JobId=${jobId}`,
         {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
-            Authorization: "Bearer " + jwt,
+            Authorization: `Bearer ${jwt}`,
           },
         }
       ).then((response) => {
@@ -54,11 +54,11 @@ export default function DeleteJobPopup(props) {
       });
     } else {
       fetch(
-        "https://jobapplicationsapi.azurewebsites.net/api/JobPostsAPI/" + jobId,
+        `https://jobapplicationsapi.azurewebsites.net/api/JobPostsAPI/${jobId}`,
         {
           method: "DELETE",
           headers: {
-            Authorization: "Bearer " + jwt,
+            Authorization: `Bearer ${jwt}`,
           },
         }
       ).then((response) => {
