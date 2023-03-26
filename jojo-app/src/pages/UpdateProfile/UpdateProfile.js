@@ -194,7 +194,6 @@ export default function UpdateProfile() {
 
     sendToApi();
   };
-  // input fields for student form
 
   // useeffect to check if user is logged in
   useEffect(() => {

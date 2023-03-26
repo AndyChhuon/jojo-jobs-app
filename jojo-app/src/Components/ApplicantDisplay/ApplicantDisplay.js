@@ -66,13 +66,13 @@ export default function ApplicantDisplay(props) {
             <Row>
               <Col>
                 <h6 className="job-about">
-                  About:
+                  About:&nbsp;
                   {about}
                 </h6>
               </Col>
               <Col>
                 <h6 className="job-about">
-                  Located:
+                  Located:&nbsp;
                   {city}
                 </h6>
               </Col>
@@ -80,13 +80,13 @@ export default function ApplicantDisplay(props) {
             <Row>
               <Col>
                 <h6 className="job-about">
-                  Email:
+                  Email:&nbsp;
                   {email}
                 </h6>
               </Col>
               <Col>
                 <h6 className="job-about">
-                  Education:
+                  Education:&nbsp;
                   {education}
                 </h6>
               </Col>

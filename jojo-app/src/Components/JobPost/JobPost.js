@@ -32,13 +32,13 @@ export default function JobPosts(props) {
             <Row>
               <Col>
                 <h6 className="job-about">
-                  Category:
+                  Category:&nbsp;
                   {jobCategory}
                 </h6>
               </Col>
               <Col>
                 <h6 className="job-about">
-                  Location:
+                  Location:&nbsp;
                   {jobLocation}
                 </h6>
               </Col>
@@ -46,13 +46,13 @@ export default function JobPosts(props) {
             <Row>
               <Col>
                 <h6 className="job-about">
-                  Company:
+                  Company:&nbsp;
                   {jobCompany}
                 </h6>
               </Col>
               <Col>
                 <h6 className="job-about">
-                  Date:
+                  Date:&nbsp;
                   {jobDate}
                 </h6>
               </Col>

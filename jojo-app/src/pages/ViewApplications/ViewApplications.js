@@ -89,9 +89,10 @@ export default function ViewApplications() {
         <Container className="ManageJobApps">
           <Row>
             <div className="Jobs-Header">
-              Showing
+              Showing&nbsp;
               {jobPosts.length === 0 ? "0" : "1"}-{jobPosts.length}
-              of {jobPosts.length} Results
+              &nbsp;of&nbsp;
+              {jobPosts.length} Results
             </div>
           </Row>
         </Container>

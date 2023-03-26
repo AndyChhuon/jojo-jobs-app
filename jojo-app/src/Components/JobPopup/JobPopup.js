@@ -246,7 +246,7 @@ export default function JobPopup(props) {
             <p className="padding-5">{jobCompany}</p>
           </div>
           <span className="p1">
-            {jobLocation} •{workType}
+            {jobLocation} • {workType}
           </span>
           <span className="new-line p1">{workTime}</span>
           <Form.Group
