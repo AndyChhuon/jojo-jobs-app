@@ -37,7 +37,7 @@ export default function JobPosts(props) {
                 </h6>
               </Col>
               <Col>
-                <h6 className="job-about">
+                <h6 className="job-about location-test">
                   Location:&nbsp;
                   {jobLocation}
                 </h6>
