@@ -128,14 +128,11 @@ export default function JojoNavbar() {
                 title={navDropdownTitle}
                 id="basic-nav-dropdown"
               >
-                <LinkContainer to="/UpdateProfile">
-                  <NavDropdown.Item>My Profile</NavDropdown.Item>
-                </LinkContainer>
-                <LinkContainer to="/settings">
-                  <NavDropdown.Item>Settings</NavDropdown.Item>
-                </LinkContainer>
                 <LinkContainer to="/notifications">
                   <NavDropdown.Item>Notifications</NavDropdown.Item>
+                </LinkContainer>
+                <LinkContainer to="/UpdateProfile">
+                  <NavDropdown.Item>My Profile</NavDropdown.Item>
                 </LinkContainer>
                 <NavDropdown.Divider />
                 <LinkContainer to="/login">

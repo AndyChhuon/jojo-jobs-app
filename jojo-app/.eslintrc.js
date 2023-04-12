@@ -46,5 +46,7 @@ module.exports = {
     "react/jsx-no-bind": 0,
     "implicit-arrow-linebreak": 0,
     "react/jsx-curly-newline": 0,
+    "max-len": 0,
+    "function-paren-newline": 0,
   },
 };
