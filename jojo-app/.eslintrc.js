@@ -48,5 +48,8 @@ module.exports = {
     "react/jsx-curly-newline": 0,
     "max-len": 0,
     "function-paren-newline": 0,
+    "react/jsx-props-no-spreading": 0,
+    "react/no-unknown-property": 0,
+    "spaced-comment": 0,
   },
 };
