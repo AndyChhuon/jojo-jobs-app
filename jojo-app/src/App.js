@@ -15,6 +15,7 @@ import Applications from "./pages/Applications/Applications";
 // import appcontextprovider
 import AppContextProvider from "./ContextProvider/AppContextProvider";
 import Notificaitons from "./pages/Notifications/Notifications";
+import HomePage from "./pages/HomePage/HomePage";
 
 function App() {
   const cookies = new Cookies();
@@ -65,7 +66,7 @@ function App() {
       <Navbar />
 
       <Routes>
-        <Route exact path="/" element={<JobPosts />} />
+        <Route exact path="/" element={<HomePage />} />
 
         <Route path="/UpdateProfile" element={<UpdateProfile />} />
         <Route path="/JobsManager" element={<ManagePosts />} />
@@ -74,6 +75,7 @@ function App() {
         <Route path="/applications" element={<Applications />} />
         <Route path="/ViewApplications" element={<ViewApplications />} />
         <Route path="/Notifications" element={<Notificaitons />} />
+        <Route path="/JobPosts" element={<JobPosts />} />
       </Routes>
     </AppContextProvider>
   );

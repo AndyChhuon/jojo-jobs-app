@@ -55,7 +55,6 @@ export default function Notifications() {
     setError(false);
     setSuccess(false);
     const cookies = new Cookies();
-    console.log(jobId);
 
     fetch(
       `https://jobapplicationsapi.azurewebsites.net/api/JobApplicantsAPI/acceptInterview/${context.id}?JobId=${jobId}`,
@@ -156,7 +155,6 @@ export default function Notifications() {
             </Alert>
           </header>
           <main>
-            {console.log(context?.jobNotification)}
             {hasNotifications ? (
               Object.keys(context?.jobNotification).map((jobId) =>
                 // For each key, get all entries (applicant, employer, or both) and value (invitedInterview, acceptedInterview, etc.)
