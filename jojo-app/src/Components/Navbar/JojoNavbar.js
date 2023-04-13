@@ -129,7 +129,16 @@ export default function JojoNavbar() {
                 id="basic-nav-dropdown"
               >
                 <LinkContainer to="/notifications">
-                  <NavDropdown.Item>Notifications</NavDropdown.Item>
+                  <NavDropdown.Item>
+                    Notifications
+                    {hasNotifications && context ? (
+                      <span className="notif-badge">
+                        {Object.keys(context?.jobNotification).length}
+                      </span>
+                    ) : (
+                      ""
+                    )}
+                  </NavDropdown.Item>
                 </LinkContainer>
                 <LinkContainer to="/UpdateProfile">
                   <NavDropdown.Item>My Profile</NavDropdown.Item>

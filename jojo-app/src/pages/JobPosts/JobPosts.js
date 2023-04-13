@@ -73,16 +73,19 @@ export default function JobPosts() {
             <SearchJob onSearchParent={onSearchChange} />
           </Col>
           <Col md={8}>
-            <div className="Jobs-Header">Showing 1-8 of 8 Results</div>
-            <div className="padding-0">
-              {jobPosts.length > 0 ? (
-                jobPosts
-              ) : (
-                <div className="no-found">
-                  <Container className="no-found">No jobs found</Container>
+            {jobPosts.length > 0 ? (
+              <>
+                <div className="Jobs-Header">
+                  Showing 1-{jobPosts.length} of {jobPosts.length} Results
                 </div>
-              )}
-            </div>
+                <div className="padding-0">{jobPosts}</div>
+              </>
+            ) : (
+              <div className="no-found">
+                <div className="Jobs-Header">Showing 0-0 of 0 Results</div>
+                <Container className="no-found">No jobs found</Container>
+              </div>
+            )}
           </Col>
         </Row>
       </div>
