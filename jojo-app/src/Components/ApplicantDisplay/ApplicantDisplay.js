@@ -24,6 +24,9 @@ export default function ApplicantDisplay(props) {
       jobId,
       updatePosts,
       jobNotification,
+      cv,
+      id,
+      profileImg,
     },
   } = props;
 
@@ -53,7 +56,14 @@ export default function ApplicantDisplay(props) {
   return (
     <Container className="ApplicantDisplay">
       <Row>
-        <Col xs={9} md={9} sm={9}>
+        <Col xs={2} md={2} sm={2} className="applicant_column">
+          <img
+            src={profileImg}
+            alt="applicant profile"
+            className="applicant_pic"
+          />
+        </Col>
+        <Col xs={7} md={7} sm={7}>
           <Container>
             <Row className="top-row">
               <Col>
@@ -88,6 +98,44 @@ export default function ApplicantDisplay(props) {
                 <h6 className="job-about">
                   Education:&nbsp;
                   {education}
+                </h6>
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                <h6 className="job-about">
+                  CV:&nbsp;
+                  <span>
+                    {cv ? (
+                      <a
+                        className="cv-link"
+                        target="_blank"
+                        href={cv}
+                        rel="noreferrer"
+                      >
+                        {`${decodeURIComponent(
+                          cv
+                            .substring(cv.lastIndexOf("/") + 1)
+                            .replace(/\+/g, " ")
+                        )}`}
+                      </a>
+                    ) : (
+                      <span>No resume uploaded</span>
+                    )}
+                  </span>
+                </h6>
+              </Col>
+              <Col>
+                <h6 className="job-about">
+                  Cover Letter:&nbsp;
+                  <a
+                    className="cv-link"
+                    target="_blank"
+                    href={`https://jobapplicants-bucket.s3.us-east-2.amazonaws.com/Cover_letter/${jobId}/${id}.pdf`}
+                    rel="noreferrer"
+                  >
+                    Cover_Letter.pdf
+                  </a>
                 </h6>
               </Col>
             </Row>

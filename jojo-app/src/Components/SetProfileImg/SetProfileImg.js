@@ -90,6 +90,7 @@ export default function SetProfileImg(props) {
   // Handle image upload (show crop preview)
   const onSelectFile = (e) => {
     if (e.target.files && e.target.files.length > 0) {
+      setProfileHasChanged(true);
       setCrop(undefined); // Makes crop preview update between images.
       const reader = new FileReader();
       reader.addEventListener("load", () => {
@@ -109,7 +110,7 @@ export default function SetProfileImg(props) {
   return (
     <div className="setProfileImg">
       <div className="profileImgContainer">
-        <img className="image" src={croppedImg} alt="profile img" />
+        <img className="image profile-img" src={croppedImg} alt="profile img" />
         <Popover
           id="popover-positioned-right"
           className="popover-positioned-right"

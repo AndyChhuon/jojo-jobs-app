@@ -235,6 +235,7 @@ export default function UpdateProfile() {
                   {/* Second of three columns */}
 
                   <label htmlFor="firstName">First Name: </label>
+
                   <input
                     type="text"
                     className="form-control"
@@ -364,7 +365,7 @@ export default function UpdateProfile() {
                   <span className="curr-resume">
                     {student?.cv ? (
                       <a
-                        className="margin-left-5"
+                        className="margin-left-5 resume-link"
                         target="_blank"
                         href={student.cv}
                         rel="noreferrer"
