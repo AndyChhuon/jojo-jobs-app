@@ -10,7 +10,6 @@ export default function Avatar() {
 
   return (
     <div className="avatar_3D">
-      {console.log(progress)}
       <Canvas camera={{ position: [0.4, 2, 1.9], fov: 90 }}>
         <Suspense fallback={null}>
           <Model />
