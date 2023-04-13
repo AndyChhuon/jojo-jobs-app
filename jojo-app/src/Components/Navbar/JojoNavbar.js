@@ -91,7 +91,7 @@ export default function JojoNavbar() {
                 <Nav.Link className="background-grey nav-text">Home</Nav.Link>
               </LinkContainer>
 
-              <LinkContainer to="/">
+              <LinkContainer to="/JobPosts">
                 <Nav.Link className="background-grey nav-text">
                   Explore Jobs
                 </Nav.Link>
