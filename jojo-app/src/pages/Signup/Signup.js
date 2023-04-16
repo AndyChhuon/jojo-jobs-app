@@ -209,8 +209,8 @@ export default function Signup() {
                     />
                     <label htmlFor="remember-checkbox">
                       Accept
-                      <LinkContainer to="/">
-                        <a className="terms-cond" href="/">
+                      <LinkContainer to="/TermsAndConditions" >
+                        <a className="terms-cond"  href="/TermsAndConditions">
                           Terms and Conditions
                         </a>
                       </LinkContainer>
