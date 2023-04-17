@@ -16,7 +16,6 @@ import Applications from "./pages/Applications/Applications";
 import AppContextProvider from "./ContextProvider/AppContextProvider";
 import Notificaitons from "./pages/Notifications/Notifications";
 import HomePage from "./pages/HomePage/HomePage";
-import TermsAndConditions from "./Components/TermsAndConditions/TermsAndConditions";
 
 function App() {
   const cookies = new Cookies();
@@ -77,8 +76,6 @@ function App() {
         <Route path="/ViewApplications" element={<ViewApplications />} />
         <Route path="/Notifications" element={<Notificaitons />} />
         <Route path="/JobPosts" element={<JobPosts />} />
-        <Route path="/TermsAndConditions" element={<TermsAndConditions />} />
-        
       </Routes>
     </AppContextProvider>
   );

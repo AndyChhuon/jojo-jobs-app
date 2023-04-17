@@ -1,11 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import "./TermsAndConditions.less";
 
-export default function TermsAndConditions() {
-  const [show, setShow] = useState(true);
+export default function TermsAndConditions(props) {
+  const { show, setShow } = props;
 
+  useEffect(() => {}, [show]);
   const handleClose = () => setShow(false);
 
   return (
@@ -15,10 +16,8 @@ export default function TermsAndConditions() {
       </Modal.Header>
       <Modal.Body>
         <div className="terms">
-          <div class="term-box">
-            <div class="terms-text">
-              <p>Last Edit:04/09/2022</p>
-              <p>Greetings User</p>
+          <div className="term-box">
+            <div className="terms-text">
               <h4>Introduction to jojo's terms of service</h4>
               <p>
                 Each time you access or use jojo's online and/or mobile services

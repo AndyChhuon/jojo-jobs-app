@@ -8,6 +8,7 @@ import { LinkContainer } from "react-router-bootstrap";
 import { gapi } from "gapi-script";
 import Alert from "react-bootstrap/Alert";
 import { useNavigate, useLocation } from "react-router-dom";
+import TermsAndConditions from "../../Components/TermsAndConditions/TermsAndConditions";
 
 import jojoLogo from "../../Images/jojo-black.png";
 
@@ -41,6 +42,8 @@ export default function Signup() {
   const [profileImg, setProfileImg] = useState("");
   const [confirmpassword, setconfirmPassword] = useState("");
   const [termsAndConditions, settermsAndConditions] = useState(false);
+
+  const [viewTerms, setViewTerms] = useState(false);
 
   const [error, setError] = useState(
     parameters.get("initDisplayError") ? parameters.get("initDisplayError") : ""
@@ -140,106 +143,111 @@ export default function Signup() {
   }, [connectedGoogle]);
 
   return (
-    <div className="signup">
-      <Row className="login-row">
-        <Col md={7} sm={12} className="login-modal">
-          <Container className="login-modal-container">
-            <LinkContainer to="/">
-              <div className="center-jojo">
-                <img className="jojo-logo" src={jojoLogo} alt="jojo logo" />
-                <span className="jojo-text">Jobs For You.</span>
-              </div>
-            </LinkContainer>
-
-            <form className="login-form-container" onSubmit={handleSubmit}>
-              <div className="login-form">
-                <h1>Create a new account</h1>
-                <p>It's quick and easy.</p>
-                <Alert
-                  variant="danger"
-                  className="alert"
-                  style={error ? { display: "block" } : { display: "none" }}
-                >
-                  {error}
-                </Alert>
-                <GoogleLogin
-                  clientId={clientId}
-                  buttonText="Sign Up With Google"
-                  onSuccess={onSuccess}
-                  cookiePolicy="single_host_origin"
-                  className="google-login"
-                />
-                <div className="separator_container">
-                  <span className="separator sep1" />
-                  or
-                  <span className="separator sep2" />
+    <>
+      <TermsAndConditions show={viewTerms} setShow={setViewTerms} />
+      <div className="signup">
+        <Row className="login-row">
+          <Col md={7} sm={12} className="login-modal">
+            <Container className="login-modal-container">
+              <LinkContainer to="/">
+                <div className="center-jojo">
+                  <img className="jojo-logo" src={jojoLogo} alt="jojo logo" />
+                  <span className="jojo-text">Jobs For You.</span>
                 </div>
+              </LinkContainer>
 
-                <input
-                  type="email"
-                  placeholder="Email"
-                  className="email-input"
-                  onChange={onEmailChange}
-                  required
-                />
+              <form className="login-form-container" onSubmit={handleSubmit}>
+                <div className="login-form">
+                  <h1>Create a new account</h1>
+                  <p>It's quick and easy.</p>
+                  <Alert
+                    variant="danger"
+                    className="alert"
+                    style={error ? { display: "block" } : { display: "none" }}
+                  >
+                    {error}
+                  </Alert>
+                  <GoogleLogin
+                    clientId={clientId}
+                    buttonText="Sign Up With Google"
+                    onSuccess={onSuccess}
+                    cookiePolicy="single_host_origin"
+                    className="google-login"
+                  />
+                  <div className="separator_container">
+                    <span className="separator sep1" />
+                    or
+                    <span className="separator sep2" />
+                  </div>
 
-                <input
-                  type="password"
-                  placeholder="Password"
-                  className="email-input pass-input"
-                  onChange={onPasswordChange}
-                  required
-                />
-                <input
-                  type="password"
-                  placeholder="Confirm Password"
-                  className="email-input pass-input"
-                  onChange={onConfirmPasswordChange}
-                  required
-                />
-                <div className="remember_forgot_container">
-                  <span className="center-rem">
-                    <input
-                      className="remember-checkbox"
-                      type="checkbox"
-                      id="remember-checkbox"
-                      onChange={() =>
-                        settermsAndConditions(!termsAndConditions)
-                      }
-                    />
-                    <label htmlFor="remember-checkbox">
-                      Accept
-                      <LinkContainer to="/TermsAndConditions" >
-                        <a className="terms-cond"  href="/TermsAndConditions">
+                  <input
+                    type="email"
+                    placeholder="Email"
+                    className="email-input"
+                    onChange={onEmailChange}
+                    required
+                  />
+
+                  <input
+                    type="password"
+                    placeholder="Password"
+                    className="email-input pass-input"
+                    onChange={onPasswordChange}
+                    required
+                  />
+                  <input
+                    type="password"
+                    placeholder="Confirm Password"
+                    className="email-input pass-input"
+                    onChange={onConfirmPasswordChange}
+                    required
+                  />
+                  <div className="remember_forgot_container">
+                    <span className="center-rem">
+                      <input
+                        className="remember-checkbox"
+                        type="checkbox"
+                        id="remember-checkbox"
+                        onChange={() =>
+                          settermsAndConditions(!termsAndConditions)
+                        }
+                      />
+                      <label htmlFor="remember-checkbox">
+                        Accept
+                        <button
+                          className="terms-cond"
+                          type="button"
+                          onClick={() => setViewTerms(true)}
+                        >
                           Terms and Conditions
-                        </a>
-                      </LinkContainer>
-                    </label>
-                  </span>
+                        </button>
+                      </label>
+                    </span>
+                  </div>
+
+                  <button type="submit" className="login-btn">
+                    Sign Up
+                  </button>
+
+                  <div className="no-account-container">
+                    Already have an account?
+                    <LinkContainer to="/login">
+                      <a href="/login">Login</a>
+                    </LinkContainer>
+                  </div>
                 </div>
+              </form>
+            </Container>
+          </Col>
 
-                <button type="submit" className="login-btn">
-                  Sign Up
-                </button>
-
-                <div className="no-account-container">
-                  Already have an account?
-                  <LinkContainer to="/login">
-                    <a href="/login">Login</a>
-                  </LinkContainer>
-                </div>
-              </div>
-            </form>
-          </Container>
-        </Col>
-
-        <Col md={5} sm={0} className="login-text-col">
-          <Container className="login-text-container">
-            <h1>Turn your dreams into careers</h1>
-            <p>Kickstart your career with just a click of a button.</p>
-          </Container>
-        </Col>
-      </Row>
-    </div>
+          <Col md={5} sm={0} className="login-text-col">
+            <Container className="login-text-container">
+              <h1>Turn your dreams into careers</h1>
+              <p>Kickstart your career with just a click of a button.</p>
+            </Container>
+          </Col>
+        </Row>
+      </div>
+    </>
   );
 }
