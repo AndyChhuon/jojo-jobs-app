@@ -1,4 +1,5 @@
 # jojo-soen341project2023
+
 Website: https://mellow-paletas-1bc4eb.netlify.app/
 
 ## Objective
@@ -54,4 +55,8 @@ Jojo seeks to fix this problem, thanks to an algorithm that matches various comp
 
 1. Run ESLint: `npm run lint`
 2. Fix lint issues: `npm run fix`
-3. Run Jest tests: `npm run test`
+3. Run Cypress tests: `npx cypress open`
+
+## Cypress Demo
+
+[![Watch the video](https://img.youtube.com/vi/bGcqZQeifrU/maxresdefault.jpg)](https://youtu.be/bGcqZQeifrU)
