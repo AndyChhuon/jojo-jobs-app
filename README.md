@@ -1,11 +1,16 @@
 # jojo-soen341project2023
-Note: this project is no longer maintained
+Note: this project is no longer being maintained
 
 Website: https://mellow-paletas-1bc4eb.netlify.app/
 
 ## Objective
 
 Develop a job applications website, using AGILE methodology.
+
+## Sprint Demos
+
+- sprint 3: https://www.youtube.com/watch?v=J-3p5YiSPI0&ab_channel=AndyChhuon
+- Sprint 2: https://www.youtube.com/watch?v=C5FcmbjEbHU&ab_channel=AndyChhuon
 
 ## Project
 
@@ -39,11 +44,6 @@ Jojo seeks to fix this problem, thanks to an algorithm that matches various comp
 2. The software shall allow applicants to search for job posts.
 3. The software shall allow employers to upload job posts.
 4. The software shall match job posts with applicants' CVs.
-
-## Sprint Demos
-
-- sprint 3: https://www.youtube.com/watch?v=J-3p5YiSPI0&ab_channel=AndyChhuon
-- Sprint 2: https://www.youtube.com/watch?v=C5FcmbjEbHU&ab_channel=AndyChhuon
 
 ## Setup
 
