@@ -1,4 +1,6 @@
 # jojo-soen341project2023
+Note: this project is no longer maintained
+
 Website: https://mellow-paletas-1bc4eb.netlify.app/
 
 ## Objective
